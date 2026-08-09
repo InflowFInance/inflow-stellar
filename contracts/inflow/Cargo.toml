@@ -1,0 +1,14 @@
+[package]
+authors = ["inflow-protocol"]
+description = "inFlow Stellar: real-time salary streaming on Soroban"
+edition = "2021"
+license = "Apache-2.0"
+name = "inflow"
+repository = "https://github.com/inflow-protocol/inflow-stellar"
+version = "0.1.0"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+soroban-sdk = "22.0.4"

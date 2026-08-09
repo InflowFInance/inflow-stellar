@@ -1,0 +1,28 @@
+{
+  "name": "@inflow/sdk",
+  "version": "0.1.0",
+  "description": "Thin TypeScript client for inFlow Stellar Soroban contract",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "echo \"No tests yet\"",
+    "lint": "eslint src --ext .ts"
+  },
+  "keywords": [
+    "stellar",
+    "soroban",
+    "inflow",
+    "salary-streaming"
+  ],
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@stellar/stellar-sdk": "13.x"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0",
+    "@types/node": "^22.x"
+  }
+}
