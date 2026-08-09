@@ -9,6 +9,14 @@ echo "=== Building inFlow Soroban Smart Contract ==="
 
 WASM_PATH="contracts/target/wasm32v1-none/release/inflow.wasm"
 
+echo "=== Checking Deployer Balance ==="
+ADMIN_ADDRESS=$(stellar keys address "$IDENTITY" 2>/dev/null || echo "")
+if [ -n "$ADMIN_ADDRESS" ] && [ "$NETWORK" = "testnet" ]; then
+  echo "Funding $ADMIN_ADDRESS via Friendbot..."
+  curl -s "https://friendbot.stellar.org?addr=$ADMIN_ADDRESS" > /dev/null || true
+  sleep 2
+fi
+
 echo "=== Deploying to $NETWORK ==="
 CONTRACT_ID=$(stellar contract deploy \
   --wasm "$WASM_PATH" \
