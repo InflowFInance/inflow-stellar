@@ -66,3 +66,21 @@ Constants:
 2. **Inner Transaction:** Client builds contract call and signs it using derived keypair.
 3. **Outer Envelope:** Worker wraps the signed transaction in a `fee_bump` envelope signed by the Treasury secret key.
 4. **Submission:** Treasury covers all network gas fees. User experiences zero gas friction.
+
+## Streaming Math Reference
+
+```
+deposit_amount = total USDC locked by employer
+duration_seconds = stream end_time - start_time
+rate_per_second = deposit_amount / duration_seconds
+
+# At any point in time t:
+elapsed = min(current_time, end_time) - start_time
+unlocked_balance = rate_per_second * elapsed - withdrawn_amount
+
+# On cancellation at time t:
+employer_refund = rate_per_second * (end_time - current_time)
+recipient_claimable = rate_per_second * elapsed - withdrawn_amount
+```
+
+All arithmetic uses i128 with fixed-point scaling to avoid floating-point rounding errors in Soroban.
