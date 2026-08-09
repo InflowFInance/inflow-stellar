@@ -16,7 +16,7 @@
         'https://inflow-relay.your-domain.workers.dev';
       this.contractId =
         document.querySelector('meta[name="contract-id"]')?.content ||
-        'PLACEHOLDER_CONTRACT_ID';
+        'CCCFBMNEBOV7KTVWLEBR2FFUGQC4KSL5TSITVU5ZPQ2U3PNLQJGX62W2';
 
       this.network =
         window.location.hostname === 'localhost' ? 'testnet' : 'mainnet';
