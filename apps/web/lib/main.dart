@@ -1051,7 +1051,7 @@ class StoryScreen extends StatelessWidget {
                   children: [
                     Text("The Stellar Advantage", style: GoogleFonts.syne(fontSize: 28, fontWeight: FontWeight.bold, color: AppTheme.amber)),
                     const SizedBox(height: 16),
-                    const Text("Native USDC · $0.000003 fees · 5s finality · fee_bump transactions", style: TextStyle(color: AppTheme.dim)),
+                    const Text("Native USDC · \$0.000003 fees · 5s finality · fee_bump transactions", style: TextStyle(color: AppTheme.dim)),
                   ],
                 ),
               ),
