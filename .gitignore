@@ -1,0 +1,38 @@
+# Rust
+/target/
+**/*.rs.bk
+
+# IMPORTANT: DO NOT ignore Cargo.lock — it must be committed
+
+# Node
+node_modules/
+dist/
+.env
+.env.local
+.env.*.local
+
+# Flutter
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+*.iml
+.idea/
+.vscode/
+
+# Firebase
+.firebase/
+.firebaserc
+firebase.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+*.swp
+*.swo
+*~
