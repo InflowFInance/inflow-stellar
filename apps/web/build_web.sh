@@ -62,6 +62,27 @@ LOADING_SCREEN="
 "
 
 # Insert the loading screen just after <body>
-sed -i -e '/<body[^>]*>/a \'"$LOADING_SCREEN" "$HTML_FILE"
+python3 -c '
+import os
+html_file = "build/web/index.html"
+loading_screen = """'"$LOADING_SCREEN"'"""
+if os.path.exists(html_file):
+    with open(html_file, "r") as f:
+        content = f.read()
+    
+    # Locate body tag (case insensitive or handling attributes)
+    import re
+    match = re.search(r"<body[^>]*>", content)
+    if match:
+        idx = match.end()
+        new_content = content[:idx] + "\n" + loading_screen + content[idx:]
+        with open(html_file, "w") as f:
+            f.write(new_content)
+        print("Injected loading screen successfully!")
+    else:
+        print("Warning: <body> tag not found in index.html")
+else:
+    print("Error: index.html not found")
+'
 
 echo "Build complete and loading screen injected!"

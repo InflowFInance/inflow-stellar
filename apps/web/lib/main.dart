@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,13 +5,11 @@ import 'dart:ui';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'dart:js_interop';
-import 'dart:js_util' as js_util;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:pinput/pinput.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 
 // ==============================================================
@@ -20,6 +17,9 @@ import 'package:flutter_web_plugins/url_strategy.dart';
 // ==============================================================
 @JS('window.StellarBridge')
 external StellarBridge get stellarBridge;
+
+@JS('window.StellarBridge')
+external JSObject? get rawStellarBridge;
 
 @JS('window.location.reload')
 external void reloadWindow();
@@ -157,7 +157,7 @@ class _FloatingBannerState extends State<FloatingBanner> with SingleTickerProvid
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Material(color: Colors.transparent, child: Container(
             margin: const EdgeInsets.only(top: 12), padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-            decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(14), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 40, offset: const Offset(0, 12))]),
+            decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(14), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.5), blurRadius: 40, offset: const Offset(0, 12))]),
             child: Row(mainAxisSize: MainAxisSize.min, children: [
               Text(icon, style: GoogleFonts.jetBrainsMono(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold)), const SizedBox(width: 12),
               Flexible(child: Text(widget.message, style: GoogleFonts.plusJakartaSans(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w600), maxLines: 2, overflow: TextOverflow.ellipsis)),
@@ -191,8 +191,9 @@ class _KeyboardScrollWrapperState extends State<KeyboardScrollWrapper> {
               if (FocusManager.instance.primaryFocus?.context?.widget is EditableText) return KeyEventResult.ignored;
               const double scrollAmount = 150.0; const double pageScrollAmount = 400.0;
               double target = widget.controller.offset;
-              if (event.logicalKey == LogicalKeyboardKey.arrowDown) target += scrollAmount;
-              else if (event.logicalKey == LogicalKeyboardKey.arrowUp) target -= scrollAmount;
+              if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+                target += scrollAmount;
+              } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) target -= scrollAmount;
               else if (event.logicalKey == LogicalKeyboardKey.pageDown || event.logicalKey == LogicalKeyboardKey.space) target += pageScrollAmount;
               else if (event.logicalKey == LogicalKeyboardKey.pageUp) target -= pageScrollAmount;
               if (target != widget.controller.offset) {
@@ -222,14 +223,14 @@ class _LiveEarningsTickerState extends State<LiveEarningsTicker> {
   @override Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-      decoration: BoxDecoration(color: widget.color.withOpacity(0.08), border: Border.all(color: widget.color.withOpacity(0.2)), borderRadius: BorderRadius.circular(12)),
+      decoration: BoxDecoration(color: widget.color.withValues(alpha: 0.08), border: Border.all(color: widget.color.withValues(alpha: 0.2)), borderRadius: BorderRadius.circular(12)),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.baseline,
         textBaseline: TextBaseline.alphabetic,
         children: [
           Flexible(
-            child: Text("You've earned ", style: GoogleFonts.plusJakartaSans(fontSize: 12, color: AppTheme.text.withOpacity(0.5))),
+            child: Text("You've earned ", style: GoogleFonts.plusJakartaSans(fontSize: 12, color: AppTheme.text.withValues(alpha: 0.5))),
           ),
           Flexible(
             child: FittedBox(
@@ -238,7 +239,7 @@ class _LiveEarningsTickerState extends State<LiveEarningsTicker> {
             ),
           ),
           Flexible(
-            child: Text(" ${widget.label}", style: GoogleFonts.plusJakartaSans(fontSize: 11, color: AppTheme.text.withOpacity(0.4))),
+            child: Text(" ${widget.label}", style: GoogleFonts.plusJakartaSans(fontSize: 11, color: AppTheme.text.withValues(alpha: 0.4))),
           ),
         ]
       )
@@ -317,8 +318,9 @@ class _LandingScreenState extends State<LandingScreen> {
           if (res.statusCode == 200) {
             final data = jsonDecode(res.body);
             if (data.containsKey('network')) setState(() => _isMainnet = data['network'] == "mainnet");
-            if (data['isClaimed'] == true) setState(() => _isLinkClaimed = true);
-            else if (data['recipientEmail'] != null) setState(() => _intendedEmailForStream = data['recipientEmail'].toString().toLowerCase());
+            if (data['isClaimed'] == true) {
+              setState(() => _isLinkClaimed = true);
+            } else if (data['recipientEmail'] != null) setState(() => _intendedEmailForStream = data['recipientEmail'].toString().toLowerCase());
           }
         } catch (e) {
           debugPrint("❌ [DeepLink] Failed to fetch stream info: $e");
@@ -331,7 +333,7 @@ class _LandingScreenState extends State<LandingScreen> {
 
   Future<void> _initEngine() async {
     try {
-      bool hasBridge = js_util.hasProperty(js_util.globalThis, 'StellarBridge');
+      bool hasBridge = rawStellarBridge != null;
       if (!hasBridge) {
         if (mounted) BannerUtils.showBanner("System UI Error: Bridge missing. Clear cache and reload.", context: context, isError: true);
         return;
@@ -426,7 +428,7 @@ class _LandingScreenState extends State<LandingScreen> {
       return Scaffold(
         backgroundColor: AppTheme.bgDark,
         body: Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Container(width: 80, height: 80, decoration: BoxDecoration(color: AppTheme.amber.withOpacity(0.1), borderRadius: BorderRadius.circular(26), border: Border.all(color: AppTheme.amber.withOpacity(0.25))), child: const Center(child: Icon(Icons.flash_on, color: AppTheme.amber, size: 32))).animate(onPlay: (c) => c.repeat(reverse: true)).moveY(begin: -7, end: 7, duration: 3500.ms),
+          Container(width: 80, height: 80, decoration: BoxDecoration(color: AppTheme.amber.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(26), border: Border.all(color: AppTheme.amber.withValues(alpha: 0.25))), child: const Center(child: Icon(Icons.flash_on, color: AppTheme.amber, size: 32))).animate(onPlay: (c) => c.repeat(reverse: true)).moveY(begin: -7, end: 7, duration: 3500.ms),
           const SizedBox(height: 32), Text("Signing you in securely...", style: GoogleFonts.syne(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)).animate().fadeIn(duration: 400.ms),
           const SizedBox(height: 8), const Text("Setting up your wallet on Stellar", style: TextStyle(color: AppTheme.textMuted, fontSize: 13)),
           const SizedBox(height: 24), const CircularProgressIndicator(color: AppTheme.amber),
@@ -485,7 +487,7 @@ class _LandingScreenState extends State<LandingScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         _buildNetworkToggle().animate().fadeIn(duration: 450.ms), const SizedBox(height: 32),
-        Container(width: 68, height: 68, decoration: BoxDecoration(color: AppTheme.amber.withOpacity(0.1), borderRadius: BorderRadius.circular(22), border: Border.all(color: AppTheme.amber.withOpacity(0.25))), child: const Center(child: Icon(Icons.flash_on, color: AppTheme.amber, size: 32))).animate().scale(duration: 400.ms, curve: Curves.easeOutBack),
+        Container(width: 68, height: 68, decoration: BoxDecoration(color: AppTheme.amber.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(22), border: Border.all(color: AppTheme.amber.withValues(alpha: 0.25))), child: const Center(child: Icon(Icons.flash_on, color: AppTheme.amber, size: 32))).animate().scale(duration: 400.ms, curve: Curves.easeOutBack),
         const SizedBox(height: 20), 
         Text("Your work ends.\nYour pay starts.", textAlign: TextAlign.center, style: GoogleFonts.syne(fontSize: 34, fontWeight: FontWeight.bold, letterSpacing: -1.2, height: 1.15, color: Colors.white)).animate().fadeIn(delay: 80.ms), 
         const SizedBox(height: 12),
@@ -522,7 +524,7 @@ class _LandingScreenState extends State<LandingScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Container(padding: const EdgeInsets.all(28), decoration: BoxDecoration(gradient: const LinearGradient(colors: [Color(0x1400D37F), Color(0x0A00D37F)], begin: Alignment.topLeft, end: Alignment.bottomRight), border: Border.all(color: AppTheme.green.withOpacity(0.25)), borderRadius: BorderRadius.circular(20)), child: Column(children: [const Text("🎉", style: TextStyle(fontSize: 44)), const SizedBox(height: 14), Text("You're being paid.\nRight now.", textAlign: TextAlign.center, style: GoogleFonts.syne(fontSize: 24, fontWeight: FontWeight.w800, color: Colors.white, height: 1.2, letterSpacing: -0.8)), const SizedBox(height: 10), const Text("Someone set up a real-time salary stream for you. Every second that passes, money accumulates — and it's yours the moment you sign in.", textAlign: TextAlign.center, style: TextStyle(color: AppTheme.dim, fontSize: 14, height: 1.65)), const SizedBox(height: 20), Container(padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14), decoration: BoxDecoration(color: Colors.black.withOpacity(0.3), border: Border.all(color: AppTheme.green.withOpacity(0.15)), borderRadius: BorderRadius.circular(12)), child: Column(children: [Text("EARNINGS TICKING UP RIGHT NOW", style: GoogleFonts.jetBrainsMono(fontSize: 11, color: AppTheme.textMuted, letterSpacing: 0.5)), const SizedBox(height: 4), LiveEarningsTicker(ratePerSec: 0.000115741, label: "", color: AppTheme.green), const SizedBox(height: 4), Text("since this page loaded · Stream #$_targetStreamId", style: const TextStyle(fontSize: 11, color: AppTheme.textMuted))]))] )).animate().fadeIn().slideY(begin: 0.1),
+        Container(padding: const EdgeInsets.all(28), decoration: BoxDecoration(gradient: const LinearGradient(colors: [Color(0x1400D37F), Color(0x0A00D37F)], begin: Alignment.topLeft, end: Alignment.bottomRight), border: Border.all(color: AppTheme.green.withValues(alpha: 0.25)), borderRadius: BorderRadius.circular(20)), child: Column(children: [const Text("🎉", style: TextStyle(fontSize: 44)), const SizedBox(height: 14), Text("You're being paid.\nRight now.", textAlign: TextAlign.center, style: GoogleFonts.syne(fontSize: 24, fontWeight: FontWeight.w800, color: Colors.white, height: 1.2, letterSpacing: -0.8)), const SizedBox(height: 10), const Text("Someone set up a real-time salary stream for you. Every second that passes, money accumulates — and it's yours the moment you sign in.", textAlign: TextAlign.center, style: TextStyle(color: AppTheme.dim, fontSize: 14, height: 1.65)), const SizedBox(height: 20), Container(padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14), decoration: BoxDecoration(color: Colors.black.withValues(alpha: 0.3), border: Border.all(color: AppTheme.green.withValues(alpha: 0.15)), borderRadius: BorderRadius.circular(12)), child: Column(children: [Text("EARNINGS TICKING UP RIGHT NOW", style: GoogleFonts.jetBrainsMono(fontSize: 11, color: AppTheme.textMuted, letterSpacing: 0.5)), const SizedBox(height: 4), LiveEarningsTicker(ratePerSec: 0.000115741, label: "", color: AppTheme.green), const SizedBox(height: 4), Text("since this page loaded · Stream #$_targetStreamId", style: const TextStyle(fontSize: 11, color: AppTheme.textMuted))]))] )).animate().fadeIn().slideY(begin: 0.1),
         const SizedBox(height: 24),
         Container(
           padding: const EdgeInsets.all(24), decoration: BoxDecoration(color: AppTheme.cardBg, border: Border.all(color: AppTheme.border), borderRadius: BorderRadius.circular(16)),
@@ -550,7 +552,7 @@ class _LandingScreenState extends State<LandingScreen> {
     Color themeColor = isGreen ? AppTheme.green : AppTheme.amber;
     final defaultPinTheme = PinTheme(width: 48, height: 56, textStyle: GoogleFonts.jetBrainsMono(fontSize: 22, color: AppTheme.text, fontWeight: FontWeight.w600), decoration: BoxDecoration(border: Border.all(color: AppTheme.border), borderRadius: BorderRadius.circular(12), color: AppTheme.bgDark));
     return Column(children: [
-      Pinput(length: 6, controller: _otpCtrl, autofocus: true, defaultPinTheme: defaultPinTheme, focusedPinTheme: defaultPinTheme.copyDecorationWith(border: Border.all(color: themeColor), boxShadow: [BoxShadow(color: themeColor.withOpacity(0.14), spreadRadius: 3)]), submittedPinTheme: defaultPinTheme.copyDecorationWith(border: Border.all(color: _hasOtpError ? AppTheme.red : themeColor)), errorPinTheme: defaultPinTheme.copyDecorationWith(border: Border.all(color: AppTheme.red), boxShadow: [BoxShadow(color: AppTheme.red.withOpacity(0.12), spreadRadius: 3)]), pinputAutovalidateMode: PinputAutovalidateMode.disabled, showCursor: true, onCompleted: (pin) => _verifyOtpAndConnect(pin), inputFormatters: [FilteringTextInputFormatter.digitsOnly]).animate().fadeIn().scale(),
+      Pinput(length: 6, controller: _otpCtrl, autofocus: true, defaultPinTheme: defaultPinTheme, focusedPinTheme: defaultPinTheme.copyDecorationWith(border: Border.all(color: themeColor), boxShadow: [BoxShadow(color: themeColor.withValues(alpha: 0.14), spreadRadius: 3)]), submittedPinTheme: defaultPinTheme.copyDecorationWith(border: Border.all(color: _hasOtpError ? AppTheme.red : themeColor)), errorPinTheme: defaultPinTheme.copyDecorationWith(border: Border.all(color: AppTheme.red), boxShadow: [BoxShadow(color: AppTheme.red.withValues(alpha: 0.12), spreadRadius: 3)]), pinputAutovalidateMode: PinputAutovalidateMode.disabled, showCursor: true, onCompleted: (pin) => _verifyOtpAndConnect(pin), inputFormatters: [FilteringTextInputFormatter.digitsOnly]).animate().fadeIn().scale(),
     ]);
   }
 }
@@ -770,7 +772,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         backgroundColor: AppTheme.bgDark,
         title: Row(
           children: [
-            Container(padding: const EdgeInsets.all(6), decoration: BoxDecoration(color: AppTheme.amber.withOpacity(0.15), borderRadius: BorderRadius.circular(8)), child: const Icon(Icons.flash_on, color: AppTheme.amber, size: 20)),
+            Container(padding: const EdgeInsets.all(6), decoration: BoxDecoration(color: AppTheme.amber.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(8)), child: const Icon(Icons.flash_on, color: AppTheme.amber, size: 20)),
             const SizedBox(width: 12),
             Text("inFlow", style: GoogleFonts.spaceGrotesk(fontWeight: FontWeight.bold)),
             const SizedBox(width: 8),
@@ -984,7 +986,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
-          color: Colors.black.withOpacity(0.5),
+          color: Colors.black.withValues(alpha: 0.5),
           child: Center(
             child: Container(
               padding: const EdgeInsets.all(32),
