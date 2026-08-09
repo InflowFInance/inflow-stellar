@@ -68,7 +68,7 @@ class AppTheme {
 class InFlowConfig {
   static const String USDC_TESTNET = "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5";
   static const String USDC_MAINNET = "CCW67TSZV3SSS2HXMBQ5JFGCKJNXKZM7UQUWUZPUTHXSTZLEO7SJMI3";
-  static const String WORKER_URL = "https://inflow-relay.your-domain.workers.dev";
+  static const String WORKER_URL = "https://inflow-relay.zapstream.workers.dev";
 
   static String usdcAddress(bool isMainnet) => isMainnet ? USDC_MAINNET : USDC_TESTNET;
 
