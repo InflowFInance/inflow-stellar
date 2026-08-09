@@ -1,0 +1,7 @@
+[network]
+rpc-url = "https://soroban-testnet.stellar.org"
+network-passphrase = "Test SDF Network ; September 2015"
+
+[[contracts]]
+name = "inflow"
+wasm-file = "inflow/target/wasm32v1-none/release/inflow.wasm"
