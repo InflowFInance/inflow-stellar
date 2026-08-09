@@ -358,10 +358,13 @@ class _LandingScreenState extends State<LandingScreen> {
     }
     setState(() => _isProcessing = true);
     try {
+      debugPrint("[inFlow] Calling stellarBridge.sendEmailOtp for: $inputEmail");
       await stellarBridge.sendEmailOtp(inputEmail.toJS).toDart;
+      debugPrint("[inFlow] OTP sent successfully!");
       setState(() => _otpSent = true);
     } catch (e) {
-      BannerUtils.showBanner("Failed to send code.", context: context, isError: true);
+      debugPrint("[inFlow] Failed to send OTP code: $e");
+      BannerUtils.showBanner("Failed to send code: $e", context: context, isError: true);
     } finally {
       setState(() => _isProcessing = false);
     }

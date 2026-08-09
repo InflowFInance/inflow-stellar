@@ -20,28 +20,41 @@
 
       this.network =
         window.location.hostname === 'localhost' ? 'testnet' : 'mainnet';
-      console.log('[StellarBridge] Initialized on network:', this.network);
+      console.log('[StellarBridge] Initialized on network:', this.network, 'Worker URL:', this.workerUrl, 'Contract ID:', this.contractId);
       return true;
     }
 
     async sendEmailOtp(email) {
+      console.log('[StellarBridge] sendEmailOtp requested for:', email, 'Target URL:', `${this.workerUrl}/send-otp`);
+      window._inflowCurrentEmail = email;
       const res = await fetch(`${this.workerUrl}/send-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       });
-      if (!res.ok) throw new Error('Failed to send OTP code');
+      console.log('[StellarBridge] sendEmailOtp response status:', res.status);
+      if (!res.ok) {
+        const errText = await res.text().catch(() => '');
+        console.error('[StellarBridge] sendEmailOtp failed:', res.status, errText);
+        throw new Error('Failed to send OTP code');
+      }
       return true;
     }
 
     async verifyOtpAndConnect(otp, network) {
       const email = window._inflowCurrentEmail;
+      console.log('[StellarBridge] verifyOtpAndConnect requested for:', email, 'Target URL:', `${this.workerUrl}/verify-otp`);
       const res = await fetch(`${this.workerUrl}/verify-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, otp, network }),
       });
-      if (!res.ok) throw new Error('Invalid OTP verification code');
+      console.log('[StellarBridge] verifyOtpAndConnect response status:', res.status);
+      if (!res.ok) {
+        const errText = await res.text().catch(() => '');
+        console.error('[StellarBridge] verifyOtpAndConnect failed:', res.status, errText);
+        throw new Error('Invalid OTP verification code');
+      }
       const data = await res.json();
       this.publicKey = data.publicKey;
       this.network = data.network || network;
