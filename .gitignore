@@ -24,3 +24,9 @@ build/
 # OS
 .DS_Store
 Thumbs.db
+
+# Stellar CLI
+.stellar/
+keypairs/
+*.wasm
+target/
