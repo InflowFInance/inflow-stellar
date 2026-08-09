@@ -1,8 +1,13 @@
 #!/bin/bash
 set -e
 
-# Run flutter build
-flutter build web --release
+# Run flutter build with maximum size and speed optimizations
+flutter build web \
+  --release \
+  --tree-shake-icons \
+  --dart2js-optimization O4 \
+  --no-source-maps \
+  --pwa-strategy none
 
 # Inject the loading screen into index.html
 HTML_FILE="build/web/index.html"
