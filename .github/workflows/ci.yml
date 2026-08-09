@@ -26,6 +26,7 @@ jobs:
         working-directory: contracts
       - name: Unit Tests
         run: cargo test
+      # Contract address is verified post-deploy via scripts/verify-contract.sh
         working-directory: contracts
       - name: Build WASM
         run: cargo build --release --target wasm32v1-none -p inflow
