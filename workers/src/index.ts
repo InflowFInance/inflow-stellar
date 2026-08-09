@@ -12,7 +12,10 @@ interface Env {
   KEYPAIRS: KVNamespace;
   STREAM_LINKS: KVNamespace;
   TREASURY_SECRET_KEY: string;
-  EMAIL_SENDER_API_KEY: string;
+  EMAILJS_SERVICE_ID: string;
+  EMAILJS_TEMPLATE_ID: string;
+  EMAILJS_PUBLIC_KEY: string;
+  EMAILJS_PRIVATE_KEY: string;
   OTP_SIGNING_SECRET: string;
   KEYPAIR_ENCRYPTION_KEY: string;
   STELLAR_NETWORK: string;
@@ -64,7 +67,7 @@ async function handleSendOtp(request: Request, env: Env): Promise<Response> {
   }
 
   const otp = await generateOtp(email, env.OTP_SIGNING_SECRET || "default_otp_secret");
-  await sendEmailOtp(email, otp, env.EMAIL_SENDER_API_KEY || "");
+  await sendEmailOtp(email, otp, env);
   return json({ success: true });
 }
 
@@ -208,20 +211,35 @@ async function fundViaFriendbot(address: string): Promise<void> {
 async function sendEmailOtp(
   email: string,
   otp: string,
-  apiKey: string
+  env: Env
 ): Promise<void> {
-  if (!apiKey) return;
-  await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
+  if (!env.EMAILJS_SERVICE_ID || !env.EMAILJS_PRIVATE_KEY) {
+    console.warn("[sendEmailOtp] EmailJS not configured — skipping send");
+    return;
+  }
+
+  const payload = {
+    service_id: env.EMAILJS_SERVICE_ID,
+    template_id: env.EMAILJS_TEMPLATE_ID,
+    user_id: env.EMAILJS_PUBLIC_KEY,
+    accessToken: env.EMAILJS_PRIVATE_KEY,
+    template_params: {
+      user_email: email,
+      otp_code: otp,
+      app_name: "inFlow",
     },
-    body: JSON.stringify({
-      from: "inFlow <noreply@inflow.finance>",
-      to: email,
-      subject: "Your inFlow sign-in code",
-      html: `<p>Your inFlow sign-in code is:</p><h1>${otp}</h1><p>This code expires in 10 minutes.</p>`,
-    }),
+  };
+
+  const res = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
   });
+
+  if (!res.ok) {
+    const text = await res.text();
+    console.error(`[sendEmailOtp] EmailJS error ${res.status}: ${text}`);
+  } else {
+    console.log(`[sendEmailOtp] OTP sent to ${email} via EmailJS`);
+  }
 }
