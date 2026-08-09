@@ -13,7 +13,7 @@
     async initBridge() {
       this.workerUrl =
         document.querySelector('meta[name="worker-url"]')?.content ||
-        'https://inflow-relay.inflowfinance.workers.dev';
+        'https://inflow-relay.zapstream.workers.dev';
       this.contractId =
         document.querySelector('meta[name="contract-id"]')?.content ||
         'CCCFBMNEBOV7KTVWLEBR2FFUGQC4KSL5TSITVU5ZPQ2U3PNLQJGX62W2';
