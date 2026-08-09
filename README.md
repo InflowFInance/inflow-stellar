@@ -244,7 +244,7 @@ inflow-stellar/
 
 | Network | Contract ID | Explorer |
 |---|---|---|
-| **Stellar Testnet** | `PENDING_DEPLOYMENT` | [Stellar Expert Testnet](https://stellar.expert/explorer/testnet) |
+| **Stellar Testnet** | `CCCFBMNEBOV7KTVWLEBR2FFUGQC4KSL5TSITVU5ZPQ2U3PNLQJGX62W2` | [Stellar Expert Testnet](https://stellar.expert/explorer/testnet/contract/CCCFBMNEBOV7KTVWLEBR2FFUGQC4KSL5TSITVU5ZPQ2U3PNLQJGX62W2) |
 | **Stellar Mainnet** | *Coming after audit* | — |
 
 > **Note for maintainers:** Run `scripts/deploy.sh testnet` to deploy, then update this table and `contracts/Soroban.toml` with the returned contract ID.
