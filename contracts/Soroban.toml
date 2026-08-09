@@ -5,3 +5,6 @@ network-passphrase = "Test SDF Network ; September 2015"
 [[contracts]]
 name = "inflow"
 wasm-file = "inflow/target/wasm32v1-none/release/inflow.wasm"
+
+[contracts.inflow.networks.testnet]
+contract_id = "CCCFBMNEBOV7KTVWLEBR2FFUGQC4KSL5TSITVU5ZPQ2U3PNLQJGX62W2"
