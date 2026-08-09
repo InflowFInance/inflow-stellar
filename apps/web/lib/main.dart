@@ -1015,80 +1015,317 @@ class _DashboardScreenState extends State<DashboardScreen> {
 // ==============================================================
 // 7. STORY SCREEN
 // ==============================================================
-class StoryScreen extends StatelessWidget {
+class StoryScreen extends StatefulWidget {
   const StoryScreen({super.key});
+  @override State<StoryScreen> createState() => _StoryScreenState();
+}
+
+class _StoryScreenState extends State<StoryScreen> {
+  final ScrollController _storyScrollController = ScrollController();
+  int? _expandedFaq;
+
+  @override void dispose() { _storyScrollController.dispose(); super.dispose(); }
+
   @override Widget build(BuildContext context) {
+    final List<Map<String, String>> faqs = [
+      {"q": "Is this safe? What if the company loses my money?", "a": "Funds are held in audited, non-custodial smart contracts on Stellar (Soroban) — the employer cannot access them once the stream is created. Only you can withdraw your earned portion."},
+      {"q": "Do I need crypto knowledge?", "a": "None. We abstract everything. You sign in with email, we handle the wallet, gas sponsorship, and stream management. You just see a balance going up."},
+      {"q": "What if the employer cancels?", "a": "They can only cancel the unearned portion. Any funds already 'streamed' to you are yours and cannot be reversed."},
+      {"q": "What is a fee_bump transaction?", "a": "Stellar has a native feature called fee_bumps where a sponsor (our worker relay) pays the transaction fees on behalf of your email wallet account. This allows you to sign in and collect your salary for free."},
+      {"q": "What is Soroban?", "a": "Soroban is Stellar's native, high-performance smart contract platform. It enables secure, gas-efficient real-time salary accrual and streaming balance calculations."}
+    ];
+
     return Scaffold(
       backgroundColor: AppTheme.bgDark,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 80),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text("Your labour is not a loan.\nIt's yours the second you do it.", textAlign: TextAlign.center, style: GoogleFonts.syne(fontSize: 54, fontWeight: FontWeight.bold, height: 1.1)),
-              const SizedBox(height: 60),
-              Wrap(
-                spacing: 24, runSpacing: 24, alignment: WrapAlignment.center,
-                children: [
-                  _statCard("93%", "of Nigeria's workforce has no formal wage contract"),
-                  _statCard("31+ Days", "average wait to receive salary in Africa"),
-                  _statCard("\$5B+", "lost annually to wage debt across Africa"),
-                  _statCard("0s", "delay with inFlow. Money moves the second you work"),
-                ],
-              ),
-              const SizedBox(height: 80),
-              Text("How It Works", style: GoogleFonts.syne(fontSize: 32, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 40),
-              _step("01", "Sign in with email"),
-              _step("02", "Employer deposits USDC salary"),
-              _step("03", "Salary streams per-second on Stellar"),
-              _step("04", "Employee opens link, signs in with email"),
-              _step("05", "Collect earnings any time, zero fees"),
-              const SizedBox(height: 80),
-              Container(
-                padding: const EdgeInsets.all(40),
-                decoration: BoxDecoration(color: AppTheme.cardBg, borderRadius: BorderRadius.circular(24), border: Border.all(color: AppTheme.amber)),
-                child: Column(
+      body: Stack(
+        children: [
+          const Positioned.fill(child: Opacity(opacity: 0.02, child: DecoratedBox(decoration: BoxDecoration(image: DecorationImage(image: NetworkImage("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E"), repeat: ImageRepeat.repeat))))),
+          
+          CustomScrollView(
+            controller: _storyScrollController,
+            slivers: [
+              SliverAppBar(
+                pinned: true,
+                backgroundColor: AppTheme.bgDark.withValues(alpha: 0.92),
+                elevation: 0,
+                automaticallyImplyLeading: false, 
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("The Stellar Advantage", style: GoogleFonts.syne(fontSize: 28, fontWeight: FontWeight.bold, color: AppTheme.amber)),
-                    const SizedBox(height: 16),
-                    const Text("Native USDC · \$0.000003 fees · 5s finality · fee_bump transactions", style: TextStyle(color: AppTheme.dim)),
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(color: AppTheme.amber.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(8)),
+                          child: const Icon(Icons.flash_on, color: AppTheme.amber, size: 20),
+                        ),
+                        const SizedBox(width: 8),
+                        Text("inFlow", style: GoogleFonts.syne(fontSize: 20, fontWeight: FontWeight.w800, color: AppTheme.amber)),
+                      ],
+                    ), 
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.amber,
+                        foregroundColor: Colors.black,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 10),
+                      ),
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text("Get Started →", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                    )
                   ],
                 ),
               ),
-              const SizedBox(height: 80),
-              ElevatedButton(onPressed: () => Navigator.pop(context), style: ElevatedButton.styleFrom(backgroundColor: AppTheme.amber, foregroundColor: Colors.black, padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20)), child: const Text("Try inFlow Now →", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))),
+              SliverToBoxAdapter(
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 680),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          bool isMobile = constraints.maxWidth < 600;
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              // Hero
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 40),
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                                      decoration: BoxDecoration(color: AppTheme.amber.withValues(alpha: 0.1), border: Border.all(color: AppTheme.amber.withValues(alpha: 0.25)), borderRadius: BorderRadius.circular(20)),
+                                      child: Text("✦ POWERED BY STELLAR SOROBAN", style: GoogleFonts.jetBrainsMono(color: AppTheme.amber, fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1.0)),
+                                    ),
+                                    const SizedBox(height: 24), 
+                                    Text("Your labour is not a loan.\nIt's yours the second you do it.", textAlign: TextAlign.center, style: GoogleFonts.syne(fontSize: isMobile ? 38 : 54, fontWeight: FontWeight.w800, height: 1.1, letterSpacing: -2.0, color: Colors.white)),
+                                    const SizedBox(height: 24), 
+                                    const Text("Africa has the world's fastest-growing workforce. What it lacks is infrastructure that treats workers like first-class citizens. inFlow streams your wage down to the second.", textAlign: TextAlign.center, style: TextStyle(color: AppTheme.dim, fontSize: 18, height: 1.75)),
+                                  ],
+                                ),
+                              ),
+                              _buildDivider(),
+
+                              // Stats
+                              Text("THE PROBLEM · BY THE NUMBERS", style: GoogleFonts.jetBrainsMono(fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1.2, color: AppTheme.textMuted)),
+                              const SizedBox(height: 32), 
+                              GridView.count(
+                                crossAxisCount: isMobile ? 1 : 2,
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                crossAxisSpacing: 14,
+                                mainAxisSpacing: 14,
+                                childAspectRatio: isMobile ? 2.5 : 1.5,
+                                children: [
+                                  _buildStatCard("77%", "of African workers live paycheck to paycheck", "ILO, 2023", AppTheme.amber),
+                                  _buildStatCard("14–45", "days the average worker waits to get paid", "AfDB Report", AppTheme.amber),
+                                  _buildStatCard("\$5B+", "lost annually to delayed salary payments", "World Bank", AppTheme.amber),
+                                  _buildStatCard("0s", "delay with inFlow — money moves the second you work", "Stellar Network", AppTheme.green),
+                                ],
+                              ),
+                              _buildDivider(),
+
+                              // Steps
+                              Text("HOW IT WORKS", style: GoogleFonts.jetBrainsMono(fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1.2, color: AppTheme.textMuted)),
+                              const SizedBox(height: 16), 
+                              Text("From payroll to your wallet.\nEvery. Single. Second.", style: GoogleFonts.syne(fontSize: 36, fontWeight: FontWeight.w800, letterSpacing: -1, height: 1.2, color: Colors.white)),
+                              const SizedBox(height: 40), 
+                              _buildStepCard("01", "Sign in with email", "No wallet or private keys required. Just enter your email, and a secure non-custodial Stellar wallet is created silently in the background."),
+                              _buildStepCard("02", "Employer funds a stream", "The employer deposits USDC into a secure Stellar smart contract, setting the stream duration and the recipient's email address."),
+                              _buildStepCard("03", "Salary drips per-second", "Your salary accumulates in real-time. Open the dashboard at any moment to watch your earnings tick up continuously."),
+                              _buildStepCard("04", "Withdraw with zero gas fees", "Collect your accumulated USDC whenever you want. Our worker relay sponsors the transaction fee via Stellar's native fee_bump feature.", isLast: true),
+                              _buildDivider(),
+
+                              // Stellar Advantage Card
+                              Text("THE STELLAR ADVANTAGE", style: GoogleFonts.jetBrainsMono(fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1.2, color: AppTheme.textMuted)),
+                              const SizedBox(height: 16),
+                              Container(
+                                padding: const EdgeInsets.all(28),
+                                decoration: BoxDecoration(
+                                  color: AppTheme.cardBg,
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color: AppTheme.purple.withValues(alpha: 0.25), width: 1.5),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        const Icon(Icons.stars_rounded, color: AppTheme.purple, size: 28),
+                                        const SizedBox(width: 12),
+                                        Text("Why Stellar beats EVM", style: GoogleFonts.syne(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 16),
+                                    _buildAdvantageRow("Native USDC", "Direct issuance on Stellar. No custom bridge wrap risks or multi-pool slippage."),
+                                    _buildAdvantageRow("Microsecond Costs", "Average stream interactions cost \$0.000003 — thousands of times cheaper than Ethereum or L2 networks."),
+                                    _buildAdvantageRow("Invisible Gas Sponsorship", "Stellar's native fee_bump protocol completely abstracts blockchain fee mechanics for web2 users."),
+                                    _buildAdvantageRow("Sub-5s Settlement", "Wage collection settles instantly, giving employees immediate access to stable cash."),
+                                  ],
+                                ),
+                              ),
+                              _buildDivider(),
+
+                              // FAQ
+                              Text("FAQ", style: GoogleFonts.jetBrainsMono(fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1.2, color: AppTheme.textMuted)),
+                              const SizedBox(height: 16), 
+                              Text("Common questions.", style: GoogleFonts.syne(fontSize: 36, fontWeight: FontWeight.w800, letterSpacing: -1, height: 1.2, color: Colors.white)),
+                              const SizedBox(height: 32), 
+                              ...faqs.asMap().entries.map((f) => InkWell(
+                                onTap: () => setState(() => _expandedFaq = _expandedFaq == f.key ? null : f.key),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(vertical: 18),
+                                  decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: AppTheme.border))),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(child: Text(f.value["q"]!, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15, height: 1.5))),
+                                          AnimatedRotation(
+                                            turns: _expandedFaq == f.key ? 0.125 : 0,
+                                            duration: const Duration(milliseconds: 200),
+                                            child: Container(
+                                              width: 26, height: 26,
+                                              decoration: BoxDecoration(
+                                                color: _expandedFaq == f.key ? AppTheme.amber.withValues(alpha: 0.15) : const Color(0xFF111118),
+                                                border: Border.all(color: _expandedFaq == f.key ? AppTheme.amber.withValues(alpha: 0.3) : AppTheme.border),
+                                                shape: BoxShape.circle,
+                                              ),
+                                              child: Center(child: Text("+", style: TextStyle(color: AppTheme.amber, fontSize: 16, fontWeight: FontWeight.bold))),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      AnimatedCrossFade(
+                                        firstChild: const SizedBox(width: double.infinity, height: 0),
+                                        secondChild: Padding(
+                                          padding: const EdgeInsets.only(top: 14),
+                                          child: Text(f.value["a"]!, style: const TextStyle(color: AppTheme.dim, fontSize: 14, height: 1.75)),
+                                        ),
+                                        crossFadeState: _expandedFaq == f.key ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                                        duration: const Duration(milliseconds: 200),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              )),
+
+                              // CTA
+                              Padding(
+                                padding: const EdgeInsets.only(top: 64, bottom: 80),
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      width: 1, height: 48,
+                                      decoration: const BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.transparent, AppTheme.amber])),
+                                    ),
+                                    const SizedBox(height: 32),
+                                    Text("Ready to get paid\nby the second?", textAlign: TextAlign.center, style: GoogleFonts.syne(fontSize: 42, fontWeight: FontWeight.w800, letterSpacing: -1.5, height: 1.2, color: Colors.white)),
+                                    const SizedBox(height: 16),
+                                    const Text("Sign up in under a minute. No wallet. No crypto. Just your email.", textAlign: TextAlign.center, style: TextStyle(color: AppTheme.dim, fontSize: 15, height: 1.7)),
+                                    const SizedBox(height: 36),
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: AppTheme.amber,
+                                        foregroundColor: Colors.black,
+                                        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                      ),
+                                      onPressed: () => Navigator.pop(context),
+                                      child: const Text("Try inFlow Now →", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Text("Live on Stellar Testnet & Mainnet · Sponsored by inFlow Relay", style: GoogleFonts.jetBrainsMono(fontSize: 11, color: AppTheme.dim)),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-  
-  Widget _statCard(String stat, String desc) {
-    return Container(
-      width: 200, padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(color: AppTheme.cardBg, borderRadius: BorderRadius.circular(16), border: Border.all(color: AppTheme.border)),
-      child: Column(
-        children: [
-          Text(stat, style: GoogleFonts.syne(fontSize: 32, fontWeight: FontWeight.bold, color: AppTheme.amber)),
-          const SizedBox(height: 12),
-          Text(desc, textAlign: TextAlign.center, style: const TextStyle(color: AppTheme.dim, fontSize: 13)),
         ],
       ),
     );
   }
 
-  Widget _step(String num, String text) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 24),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
+  Widget _buildDivider() {
+    return Container(height: 1, color: AppTheme.border, margin: const EdgeInsets.symmetric(vertical: 64));
+  }
+
+  Widget _buildStatCard(String value, String label, String source, Color color) { 
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(color: AppTheme.cardBg, border: Border.all(color: AppTheme.border, width: 1.5), borderRadius: BorderRadius.circular(16)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(num, style: GoogleFonts.jetBrainsMono(fontSize: 24, color: AppTheme.amber)),
-          const SizedBox(width: 24),
-          Text(text, style: const TextStyle(fontSize: 20, color: Colors.white)),
+          Text(value, style: GoogleFonts.syne(fontSize: 40, fontWeight: FontWeight.w800, color: color, letterSpacing: -1.5, height: 1)),
+          const SizedBox(height: 10),
+          Text(label, style: const TextStyle(color: AppTheme.dim, fontSize: 14, height: 1.6)),
+          const Spacer(),
+          Text(source, style: GoogleFonts.jetBrainsMono(color: AppTheme.dim, fontSize: 10)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStepCard(String n, String title, String body, {bool isLast = false}) { 
+    return Container(
+      margin: const EdgeInsets.only(bottom: 28),
+      padding: const EdgeInsets.only(bottom: 28),
+      decoration: BoxDecoration(border: isLast ? null : const Border(bottom: BorderSide(color: AppTheme.border))),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 48, height: 48,
+            decoration: BoxDecoration(color: AppTheme.amber.withValues(alpha: 0.08), border: Border.all(color: AppTheme.amber.withValues(alpha: 0.2), width: 1.5), borderRadius: BorderRadius.circular(14)),
+            child: Center(child: Text(n, style: GoogleFonts.jetBrainsMono(color: AppTheme.amber, fontSize: 13, fontWeight: FontWeight.bold))),
+          ),
+          const SizedBox(width: 20),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white, letterSpacing: -0.3)),
+                const SizedBox(height: 8),
+                Text(body, style: const TextStyle(color: AppTheme.dim, fontSize: 14, height: 1.7)),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAdvantageRow(String title, String desc) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.check_circle_outline_rounded, color: AppTheme.purple, size: 18),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.white)),
+                const SizedBox(height: 4),
+                Text(desc, style: const TextStyle(color: AppTheme.dim, fontSize: 13, height: 1.5)),
+              ],
+            ),
+          )
         ],
       ),
     );
