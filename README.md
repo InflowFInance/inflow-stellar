@@ -321,7 +321,7 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for code standards, testing requi
 - [x] Flutter Mobile app (iOS + Android)
 - [x] Open-source health files (README, CONTRIBUTING, ARCHITECTURE, ROADMAP, GOVERNANCE, SECURITY, CHANGELOG)
 - [x] GitHub Actions CI pipeline (Rust check / clippy / WASM build / SDK build)
-- [ ] Testnet contract deployment + live contract ID
+- [x] Testnet contract deployment + live contract ID (`CCCFBMNEBOV7KTVWLEBR2FFUGQC4KSL5TSITVU5ZPQ2U3PNLQJGX62W2`)
 - [ ] Mainnet contract deployment + security audit
 - [ ] Employer dashboard — multi-stream management, CSV payroll upload
 - [ ] Real-time push notifications (stream claimed, funds deposited)
