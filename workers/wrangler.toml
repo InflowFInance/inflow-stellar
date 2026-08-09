@@ -1,0 +1,21 @@
+name = "inflow-relay"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+[vars]
+STELLAR_NETWORK = "testnet"
+INFLOW_CONTRACT_ID = "PLACEHOLDER_TESTNET_CONTRACT_ID"
+
+[[kv_namespaces]]
+binding = "KEYPAIRS"
+id = "inflow_keypairs_kv_id"
+
+[[kv_namespaces]]
+binding = "STREAM_LINKS"
+id = "inflow_stream_links_kv_id"
+
+# Required Worker secrets (set via `wrangler secret put`):
+# TREASURY_SECRET_KEY        — Stellar secret key for fee_bump sponsorship
+# EMAIL_SENDER_API_KEY       — Resend/SendGrid API key
+# OTP_SIGNING_SECRET         — HMAC secret for OTP code generation
+# KEYPAIR_ENCRYPTION_KEY     — AES-256 hex key for encrypting stored seeds
