@@ -23,7 +23,7 @@ class StreamCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: stream.isActive
-              ? const Color(0xFF00D37F).withOpacity(0.2)
+              ? const Color(0xFF00D37F).withValues(alpha: 0.2)
               : const Color(0xFF1C1C2A),
         ),
       ),
@@ -102,7 +102,7 @@ class StreamCard extends StatelessWidget {
                 onPressed: onWithdraw,
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(
-                      color: const Color(0xFF00D37F).withOpacity(0.5)),
+                      color: const Color(0xFF00D37F).withValues(alpha: 0.5)),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12)),
                 ),
@@ -132,8 +132,8 @@ class _StatusBadge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: isActive
-            ? const Color(0xFF00D37F).withOpacity(0.12)
-            : const Color(0xFF3C3C4A).withOpacity(0.3),
+            ? const Color(0xFF00D37F).withValues(alpha: 0.12)
+            : const Color(0xFF3C3C4A).withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(

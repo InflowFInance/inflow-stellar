@@ -26,7 +26,7 @@ class GradientButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
           foregroundColor: Colors.black,
-          disabledBackgroundColor: color.withOpacity(0.4),
+          disabledBackgroundColor: color.withValues(alpha: 0.4),
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14)),
           elevation: 0,
@@ -36,7 +36,7 @@ class GradientButton extends StatelessWidget {
                 width: 22,
                 height: 22,
                 child: CircularProgressIndicator(
-                    strokeWidth: 2, color: Colors.black.withOpacity(0.6)),
+                    strokeWidth: 2, color: Colors.black.withValues(alpha: 0.6)),
               )
             : Text(
                 label,

@@ -36,7 +36,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: const Color(0xFFF59E0B).withOpacity(0.15),
+                color: const Color(0xFFF59E0B).withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: const Icon(Icons.bolt_rounded,
@@ -60,8 +60,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
               color: provider.stellarService.network == 'mainnet'
-                  ? const Color(0xFF00D37F).withOpacity(0.15)
-                  : const Color(0xFFF59E0B).withOpacity(0.15),
+                  ? const Color(0xFF00D37F).withValues(alpha: 0.15)
+                  : const Color(0xFFF59E0B).withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
@@ -252,7 +252,7 @@ class _EmployeeView extends StatelessWidget {
                     width: 32,
                     height: 32,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF5B21B6).withOpacity(0.2),
+                      color: const Color(0xFF5B21B6).withValues(alpha: 0.2),
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(Icons.person_outline,
@@ -294,7 +294,7 @@ class _EmployeeView extends StatelessWidget {
               colors: [Color(0xFF0F1A12), Color(0xFF0C0C14)],
             ),
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: const Color(0xFF00D37F).withOpacity(0.3)),
+            border: Border.all(color: const Color(0xFF00D37F).withValues(alpha: 0.3)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -309,7 +309,7 @@ class _EmployeeView extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF00D37F).withOpacity(0.15),
+                      color: const Color(0xFF00D37F).withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Row(

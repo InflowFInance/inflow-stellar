@@ -178,7 +178,7 @@ class _FormView extends StatelessWidget {
                 color: const Color(0xFF0C0C14),
                 borderRadius: BorderRadius.circular(14),
                 border:
-                    Border.all(color: const Color(0xFF00D37F).withOpacity(0.3)),
+                    Border.all(color: const Color(0xFF00D37F).withValues(alpha: 0.3)),
               ),
               child: Column(
                 children: [
@@ -299,7 +299,7 @@ class _SuccessView extends StatelessWidget {
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: const Color(0xFF00D37F).withOpacity(0.15),
+                color: const Color(0xFF00D37F).withValues(alpha: 0.15),
                 shape: BoxShape.circle,
               ),
               child: const Icon(Icons.check_circle_outline_rounded,

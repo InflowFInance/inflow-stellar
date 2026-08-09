@@ -114,10 +114,10 @@ class _LandingScreenState extends State<LandingScreen> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF5B21B6).withOpacity(0.2),
+                  color: const Color(0xFF5B21B6).withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                      color: const Color(0xFF5B21B6).withOpacity(0.4)),
+                      color: const Color(0xFF5B21B6).withValues(alpha: 0.4)),
                 ),
                 child: Text(
                   '⭐ Powered by Soroban',
@@ -298,7 +298,7 @@ class _ActionButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
           foregroundColor: Colors.black,
-          disabledBackgroundColor: color.withOpacity(0.4),
+          disabledBackgroundColor: color.withValues(alpha: 0.4),
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14)),
           elevation: 0,
@@ -308,7 +308,7 @@ class _ActionButton extends StatelessWidget {
                 width: 22,
                 height: 22,
                 child: CircularProgressIndicator(
-                    strokeWidth: 2, color: Colors.black.withOpacity(0.6)),
+                    strokeWidth: 2, color: Colors.black.withValues(alpha: 0.6)),
               )
             : Text(
                 label,
