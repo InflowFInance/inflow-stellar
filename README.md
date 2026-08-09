@@ -20,7 +20,7 @@
 
 *You work for a second. You earn for a second. That is what inFlow makes real.*
 
-**[🚀 Live App](#) · [📹 Demo](#demo) · [📖 How It Works](#how-it-works) · [🛠 Docs](ARCHITECTURE.md)**
+**[🚀 Live App](https://inflowfinance.web.app) · [📹 Demo](#demo) · [📖 How It Works](#how-it-works) · [🛠 Docs](ARCHITECTURE.md)**
 
 </div>
 
@@ -77,7 +77,23 @@ This is Africa's first salary streaming service. It runs on Stellar. And it is o
 
 ## 📹 Demo
 
-> *Video coming soon — the live testnet app is being deployed. Screenshots will be embedded here upon first deployment.*
+> **Live at [inflowfinance.web.app](https://inflowfinance.web.app)** — try the real app on Stellar Testnet with any email address.
+
+### Landing Page
+
+![inFlow Stellar — Landing Page](docs/screenshots/landing-page.png)
+
+*The main entry point. Live earnings ticker shows USDC accumulating per-second. Stellar Testnet / Mainnet toggle. Email-only sign-in — no wallet, no seed phrase.*
+
+### How It Works
+
+![inFlow Stellar — Story Screen Hero](docs/screenshots/how-it-works-hero.png)
+
+*The story screen opens with the core thesis: your labour is not a loan. Africa has the world's fastest-growing workforce — inFlow is built for it.*
+
+![inFlow Stellar — FAQ & CTA](docs/screenshots/how-it-works-cta.png)
+
+*Expandable FAQ section covering Soroban, fee_bump, and stream security. Bottom CTA drives conversion back to the app.*
 
 ---
 
@@ -228,8 +244,10 @@ inflow-stellar/
 
 | Network | Contract ID | Explorer |
 |---|---|---|
-| **Stellar Testnet** | `PLACEHOLDER_TESTNET_CONTRACT_ID` | [View on Stellar Expert](https://stellar.expert/explorer/testnet) |
+| **Stellar Testnet** | `PENDING_DEPLOYMENT` | [Stellar Expert Testnet](https://stellar.expert/explorer/testnet) |
 | **Stellar Mainnet** | *Coming after audit* | — |
+
+> **Note for maintainers:** Run `scripts/deploy.sh testnet` to deploy, then update this table and `contracts/Soroban.toml` with the returned contract ID.
 
 ---
 
@@ -299,8 +317,11 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for code standards, testing requi
 - [x] Soroban smart contract — core streaming, claim, cancel, withdraw
 - [x] Cloudflare Worker — email OTP, HKDF keypair custody, fee_bump relay
 - [x] TypeScript SDK (`@inflow/sdk`)
-- [x] Flutter Web app (PWA)
+- [x] Flutter Web app (PWA) — live at [inflowfinance.web.app](https://inflowfinance.web.app)
 - [x] Flutter Mobile app (iOS + Android)
+- [x] Open-source health files (README, CONTRIBUTING, ARCHITECTURE, ROADMAP, GOVERNANCE, SECURITY, CHANGELOG)
+- [x] GitHub Actions CI pipeline (Rust check / clippy / WASM build / SDK build)
+- [ ] Testnet contract deployment + live contract ID
 - [ ] Mainnet contract deployment + security audit
 - [ ] Employer dashboard — multi-stream management, CSV payroll upload
 - [ ] Real-time push notifications (stream claimed, funds deposited)
