@@ -870,7 +870,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           if (_payStep == 1) ...[
             TextField(controller: _recipientEmailCtrl, decoration: const InputDecoration(labelText: "Recipient Email", filled: true, fillColor: AppTheme.cardBg)),
             const SizedBox(height: 24),
-            ElevatedButton(onPressed: () => setState(() => _payStep = 2), style: ElevatedButton.styleFrom(minimumSize: const Size.infinity, 50), child: const Text("Continue →")),
+            ElevatedButton(onPressed: () => setState(() => _payStep = 2), style: ElevatedButton.styleFrom(minimumSize: const Size(double.infinity, 50)), child: const Text("Continue →")),
           ] else if (_payStep == 2) ...[
             TextField(controller: _amountCtrl, decoration: const InputDecoration(labelText: "Amount (USDC)", filled: true, fillColor: AppTheme.cardBg), keyboardType: TextInputType.number),
             const SizedBox(height: 16),
@@ -915,7 +915,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   setState(() { _txPhase = TxPhase.error; _txStatusMessage = "Error: $e"; });
                 }
               },
-              style: ElevatedButton.styleFrom(backgroundColor: AppTheme.amber, foregroundColor: Colors.black, minimumSize: const Size.infinity, 50),
+              style: ElevatedButton.styleFrom(backgroundColor: AppTheme.amber, foregroundColor: Colors.black, minimumSize: const Size(double.infinity, 50)),
               child: const Text("Confirm & Start Streaming ⚡", style: TextStyle(fontWeight: FontWeight.bold)),
             ),
           ]
