@@ -17,6 +17,14 @@ import type {
   TransactionResult,
 } from "./types.js";
 
+function hexToUint8Array(hexString: string): Uint8Array {
+  const bytes = new Uint8Array(hexString.length / 2);
+  for (let i = 0; i < hexString.length; i += 2) {
+    bytes[i / 2] = parseInt(hexString.substring(i, i + 2), 16);
+  }
+  return bytes;
+}
+
 export class InFlowClient {
   private rpc: StellarRpc.Server;
   private contractId: string;
@@ -56,19 +64,19 @@ export class InFlowClient {
       nativeToScVal(params.startTime, { type: "u64" }),
       nativeToScVal(params.stopTime, { type: "u64" }),
       params.claimHash
-        ? nativeToScVal(Buffer.from(params.claimHash, "hex"), { type: "bytes" })
+        ? nativeToScVal(hexToUint8Array(params.claimHash), { type: "bytes" })
         : xdr.ScVal.scvVoid(),
     ];
 
     const result = await this.invokeContract("create_stream", args, params.sender);
-    const streamId = BigInt(scValToNative(result as xdr.ScVal));
+    const streamId = BigInt(scValToNative(result as unknown as xdr.ScVal));
     return { txHash: "", success: true, streamId };
   }
 
   async claimStream(streamId: bigint, secret: string): Promise<TransactionResult> {
     const args = [
       nativeToScVal(streamId, { type: "u64" }),
-      nativeToScVal(Buffer.from(secret, "utf8"), { type: "bytes" }),
+      nativeToScVal(new TextEncoder().encode(secret), { type: "bytes" }),
     ];
     const invoker = this.keypair?.publicKey() ?? "";
     return this.invokeContract("claim_stream", args, invoker);

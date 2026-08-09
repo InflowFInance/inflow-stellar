@@ -1,4 +1,4 @@
-use soroban_sdk::{symbol_short, Address, BytesN, Env};
+use soroban_sdk::{symbol_short, Address, Bytes, Env};
 
 pub fn emit_stream_created(
     env: &Env,
@@ -7,7 +7,7 @@ pub fn emit_stream_created(
     recipient: &Option<Address>,
     token: &Address,
     deposit: i128,
-    claim_hash: &Option<BytesN<32>>,
+    claim_hash: &Option<Bytes>,
 ) {
     env.events().publish(
         (symbol_short!("CREATED"), stream_id),

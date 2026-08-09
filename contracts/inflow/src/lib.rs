@@ -7,7 +7,7 @@ mod storage;
 mod types;
 
 use soroban_sdk::{
-    contract, contractimpl, token, Address, Bytes, BytesN, Env,
+    contract, contractimpl, token, Address, Bytes, Env,
 };
 
 pub use errors::ContractError;
@@ -18,8 +18,8 @@ pub use storage::{
 };
 pub use types::{StorageKey, Stream};
 
-fn compute_hash(env: &Env, data: &Bytes) -> BytesN<32> {
-    env.crypto().sha256(data).into()
+fn compute_hash(env: &Env, data: &Bytes) -> Bytes {
+    env.crypto().sha256(data).to_bytes().into()
 }
 
 #[contract]
@@ -41,7 +41,7 @@ impl InFlowContract {
         deposit: i128,
         start_time: u64,
         stop_time: u64,
-        claim_hash: Option<BytesN<32>>,
+        claim_hash: Option<Bytes>,
     ) -> Result<u64, ContractError> {
         sender.require_auth();
 
@@ -267,7 +267,7 @@ impl InFlowContract {
 mod tests {
     use super::*;
     use soroban_sdk::{
-        testutils::{Address as _, Ledger},
+        testutils::Address as _,
         token, Bytes, Env,
     };
 
@@ -294,12 +294,14 @@ mod tests {
 
     #[test]
     fn test_initialize_and_create_stream() {
-        let (env, client, _, _) = create_test_env();
+        let (env, client, contract_id, _) = create_test_env();
         let sender = Address::generate(&env);
         let recipient = Address::generate(&env);
         let (token_id, token_admin) = create_token(&env, &sender);
 
         token_admin.mint(&sender, &1_000_000_000_000i128);
+
+        let token_client = token::Client::new(&env, &token_id);
 
         let now = env.ledger().timestamp();
         let start = now + 60;
@@ -307,20 +309,21 @@ mod tests {
         let stop = start + duration;
         let deposit = (duration as i128) * 100;
 
-        let stream_id = client
-            .create_stream(
-                &sender,
-                &Some(recipient.clone()),
-                &token_id,
-                &deposit,
-                &start,
-                &stop,
-                &None,
-            )
-            .unwrap();
+        // Approve contract to spend on sender's behalf
+        token_client.approve(&sender, &contract_id, &deposit, &(stop as u32 + 1000));
+
+        let stream_id = client.create_stream(
+            &sender,
+            &Some(recipient.clone()),
+            &token_id,
+            &deposit,
+            &start,
+            &stop,
+            &None,
+        );
 
         assert_eq!(stream_id, 1);
-        let stream = client.get_stream(&stream_id).unwrap();
+        let stream = client.get_stream(&stream_id);
         assert_eq!(stream.sender, sender);
         assert_eq!(stream.deposit, deposit);
         assert_eq!(stream.remaining_balance, deposit);
@@ -329,15 +332,17 @@ mod tests {
 
     #[test]
     fn test_claim_stream_secret_verification() {
-        let (env, client, _, _) = create_test_env();
+        let (env, client, contract_id, _) = create_test_env();
         let sender = Address::generate(&env);
         let claimer = Address::generate(&env);
         let (token_id, token_admin) = create_token(&env, &sender);
 
         token_admin.mint(&sender, &1_000_000_000_000i128);
 
+        let token_client = token::Client::new(&env, &token_id);
+
         let secret = Bytes::from_slice(&env, b"my-secret-claim-passphrase");
-        let claim_hash: BytesN<32> = env.crypto().sha256(&secret).into();
+        let claim_hash = env.crypto().sha256(&secret).to_bytes().into();
 
         let now = env.ledger().timestamp();
         let start = now + 60;
@@ -345,17 +350,17 @@ mod tests {
         let stop = start + duration;
         let deposit = (duration as i128) * 10;
 
-        let stream_id = client
-            .create_stream(
-                &sender,
-                &None,
-                &token_id,
-                &deposit,
-                &start,
-                &stop,
-                &Some(claim_hash),
-            )
-            .unwrap();
+        token_client.approve(&sender, &contract_id, &deposit, &(stop as u32 + 1000));
+
+        let stream_id = client.create_stream(
+            &sender,
+            &None,
+            &token_id,
+            &deposit,
+            &start,
+            &stop,
+            &Some(claim_hash),
+        );
 
         // Wrong secret fails
         let wrong_secret = Bytes::from_slice(&env, b"wrong-secret");
@@ -363,9 +368,9 @@ mod tests {
         assert!(err.is_err());
 
         // Correct secret succeeds
-        client.claim_stream(&stream_id, &claimer, &secret).unwrap();
+        client.claim_stream(&stream_id, &claimer, &secret);
 
-        let stream = client.get_stream(&stream_id).unwrap();
+        let stream = client.get_stream(&stream_id);
         assert!(stream.recipient.is_some());
     }
 }

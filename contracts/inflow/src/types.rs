@@ -1,4 +1,4 @@
-use soroban_sdk::{contracttype, Address, BytesN};
+use soroban_sdk::{contracttype, Address, Bytes};
 
 #[contracttype]
 #[derive(Clone, Debug, PartialEq)]
@@ -12,7 +12,7 @@ pub struct Stream {
     pub stop_time: u64,
     pub withdrawn_amount: i128,
     pub remaining_balance: i128,
-    pub claim_hash: Option<BytesN<32>>,
+    pub claim_hash: Option<Bytes>,
 }
 
 #[contracttype]
