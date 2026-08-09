@@ -1,13 +1,13 @@
-use soroban_sdk::{symbol_short, Address, BytesN, Env, Option as SorobanOption};
+use soroban_sdk::{symbol_short, Address, BytesN, Env};
 
 pub fn emit_stream_created(
     env: &Env,
     stream_id: u64,
     sender: &Address,
-    recipient: &SorobanOption<Address>,
+    recipient: &Option<Address>,
     token: &Address,
     deposit: i128,
-    claim_hash: &SorobanOption<BytesN<32>>,
+    claim_hash: &Option<BytesN<32>>,
 ) {
     env.events().publish(
         (symbol_short!("CREATED"), stream_id),
@@ -33,7 +33,7 @@ pub fn emit_cancelled(
     env: &Env,
     stream_id: u64,
     sender: &Address,
-    recipient: &SorobanOption<Address>,
+    recipient: &Option<Address>,
     sender_balance: i128,
     recipient_balance: i128,
 ) {

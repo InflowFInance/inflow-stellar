@@ -8,7 +8,6 @@ mod types;
 
 use soroban_sdk::{
     contract, contractimpl, token, Address, Bytes, BytesN, Env,
-    Option as SorobanOption,
 };
 
 pub use errors::ContractError;
@@ -20,7 +19,7 @@ pub use storage::{
 pub use types::{StorageKey, Stream};
 
 fn compute_hash(env: &Env, data: &Bytes) -> BytesN<32> {
-    env.crypto().sha256(data)
+    env.crypto().sha256(data).into()
 }
 
 #[contract]
@@ -37,26 +36,26 @@ impl InFlowContract {
     pub fn create_stream(
         env: Env,
         sender: Address,
-        recipient: SorobanOption<Address>,
+        recipient: Option<Address>,
         token: Address,
         deposit: i128,
         start_time: u64,
         stop_time: u64,
-        claim_hash: SorobanOption<BytesN<32>>,
+        claim_hash: Option<BytesN<32>>,
     ) -> Result<u64, ContractError> {
         sender.require_auth();
 
         match (&recipient, &claim_hash) {
-            (SorobanOption::Some(_), SorobanOption::Some(_)) => {
-                return Err(ContractError::CannotProvideBoth)
+            (Some(_), Some(_)) => {
+                return Err(ContractError::CannotProvideBoth);
             }
-            (SorobanOption::None, SorobanOption::None) => {
-                return Err(ContractError::MustProvideRecipientOrHash)
+            (None, None) => {
+                return Err(ContractError::MustProvideRecipientOrHash);
             }
             _ => {}
         }
 
-        if let SorobanOption::Some(ref r) = recipient {
+        if let Some(ref r) = recipient {
             if *r == sender {
                 return Err(ContractError::StreamToSelf);
             }
@@ -118,7 +117,13 @@ impl InFlowContract {
         Ok(stream_id)
     }
 
-    pub fn claim_stream(env: Env, stream_id: u64, secret: Bytes) -> Result<(), ContractError> {
+    pub fn claim_stream(
+        env: Env,
+        stream_id: u64,
+        claimer: Address,
+        secret: Bytes,
+    ) -> Result<(), ContractError> {
+        claimer.require_auth();
         let mut stream = read_stream(&env, stream_id)?;
 
         if stream.claim_hash.is_none() {
@@ -135,9 +140,8 @@ impl InFlowContract {
             return Err(ContractError::InvalidClaimSecret);
         }
 
-        let claimer = env.invoker();
-        stream.recipient = SorobanOption::Some(claimer.clone());
-        stream.claim_hash = SorobanOption::None;
+        stream.recipient = Some(claimer.clone());
+        stream.claim_hash = None;
 
         write_stream(&env, stream_id, &stream);
         events::emit_stream_claimed(&env, stream_id, &claimer);
@@ -175,15 +179,19 @@ impl InFlowContract {
         Ok(())
     }
 
-    pub fn cancel_stream(env: Env, stream_id: u64) -> Result<(), ContractError> {
+    pub fn cancel_stream(
+        env: Env,
+        stream_id: u64,
+        caller: Address,
+    ) -> Result<(), ContractError> {
+        caller.require_auth();
         let mut stream = read_stream(&env, stream_id)?;
-        let invoker = env.invoker();
 
-        let is_sender = invoker == stream.sender;
+        let is_sender = caller == stream.sender;
         let is_recipient = stream
             .recipient
             .as_ref()
-            .map(|r| *r == invoker)
+            .map(|r| *r == caller)
             .unwrap_or(false);
 
         if !is_sender && !is_recipient {
@@ -201,7 +209,7 @@ impl InFlowContract {
         let token_client = token::Client::new(&env, &stream.token);
 
         if recipient_gets > 0 {
-            if let SorobanOption::Some(ref recipient) = stream.recipient {
+            if let Some(ref recipient) = stream.recipient {
                 token_client.transfer(
                     &env.current_contract_address(),
                     recipient,
@@ -302,12 +310,12 @@ mod tests {
         let stream_id = client
             .create_stream(
                 &sender,
-                &SorobanOption::Some(recipient.clone()),
+                &Some(recipient.clone()),
                 &token_id,
                 &deposit,
                 &start,
                 &stop,
-                &SorobanOption::None,
+                &None,
             )
             .unwrap();
 
@@ -329,7 +337,7 @@ mod tests {
         token_admin.mint(&sender, &1_000_000_000_000i128);
 
         let secret = Bytes::from_slice(&env, b"my-secret-claim-passphrase");
-        let claim_hash = env.crypto().sha256(&secret);
+        let claim_hash: BytesN<32> = env.crypto().sha256(&secret).into();
 
         let now = env.ledger().timestamp();
         let start = now + 60;
@@ -340,22 +348,22 @@ mod tests {
         let stream_id = client
             .create_stream(
                 &sender,
-                &SorobanOption::None,
+                &None,
                 &token_id,
                 &deposit,
                 &start,
                 &stop,
-                &SorobanOption::Some(claim_hash),
+                &Some(claim_hash),
             )
             .unwrap();
 
         // Wrong secret fails
         let wrong_secret = Bytes::from_slice(&env, b"wrong-secret");
-        let err = client.try_claim_stream(&stream_id, &wrong_secret);
+        let err = client.try_claim_stream(&stream_id, &claimer, &wrong_secret);
         assert!(err.is_err());
 
         // Correct secret succeeds
-        client.claim_stream(&stream_id, &secret).unwrap();
+        client.claim_stream(&stream_id, &claimer, &secret).unwrap();
 
         let stream = client.get_stream(&stream_id).unwrap();
         assert!(stream.recipient.is_some());
