@@ -76,3 +76,23 @@ Please do not open public GitHub issues for security vulnerabilities. Refer to [
 ## 📜 License
 
 By contributing, you agree that your contributions will be licensed under the [Apache 2.0 License](LICENSE).
+
+## Testing the Soroban Contract
+
+Run the full test suite:
+```bash
+cd contracts
+cargo test -- --nocapture
+```
+
+Run only streaming math tests:
+```bash
+cargo test math
+```
+
+Run a specific test:
+```bash
+cargo test test_withdraw_after_half_duration -- --nocapture
+```
+
+The contract uses `soroban_sdk::testutils` for in-process simulation — no testnet required for unit tests.
