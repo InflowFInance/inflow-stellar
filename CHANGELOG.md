@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.0-testnet] - 2026-08-10
+
+### Added
+- Soroban contract deployed and initialized on Stellar Testnet.
+- Contract ID: `CCCFBMNEBOV7KTVWLEBR2FFUGQC4KSL5TSITVU5ZPQ2U3PNLQJGX62W2`
+- Deployer: `GBFYGDEXSLR23E2R5DHFEMDKWVC5HDCQVD44J4TPREGMMCJ7VNDWY6TG`
+- Explorer: https://stellar.expert/explorer/testnet/contract/CCCFBMNEBOV7KTVWLEBR2FFUGQC4KSL5TSITVU5ZPQ2U3PNLQJGX62W2
+
 ## [0.1.0] - 2026-08-09
 
 ### Added
