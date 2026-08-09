@@ -1,0 +1,9 @@
+inFlow × Stellar
+Copyright 2026 InflowFinance
+
+This product is licensed under the Apache License, Version 2.0.
+You may obtain a copy of the License at:
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Third-party dependencies are listed in their respective package manifests
+(Cargo.toml, package.json) and are subject to their own licenses.
