@@ -343,3 +343,22 @@ Built with ❤️ for Africa's workforce. Powered by Stellar.
 *"If you can receive email, you can receive your salary."*
 
 </div>
+
+---
+
+## ❓ Frequently Asked Questions
+
+**Is inFlow custodial?**  
+No. Funds are locked in a Soroban smart contract, not held by inFlow. The contract code is open source and verifiable on-chain.
+
+**What if the employer disappears after creating a stream?**  
+The stream's vested funds can always be withdrawn by the recipient — no employer action is required. Only the unvested portion would be at risk if the employer cancels (and cancellation returns the unvested portion to the employer pro-rata).
+
+**Do employees need a crypto wallet?**  
+No. inFlow derives an Ed25519 keypair from your email using HKDF — a cryptographic standard. The key is derived server-side and used transparently. You never see a seed phrase.
+
+**What happens to my keypair if the server goes down?**  
+The keypair derivation is deterministic from your email + a server master key. As long as the master key is preserved (backed up in Cloudflare Secrets), keypairs can always be re-derived. We recommend operators document and back up this key.
+
+**Why Stellar and not Ethereum?**  
+Stellar's `fee_bump` envelope enables true gasless UX at the protocol level — no meta-transaction hacks, no EIP-2771 complexity. Stellar also settles in ~5 seconds and costs $0.000003 per transaction, making per-second streaming economically viable.
