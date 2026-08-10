@@ -67,8 +67,12 @@ async function handleSendOtp(request: Request, env: Env): Promise<Response> {
   }
 
   const otp = await generateOtp(email, env.OTP_SIGNING_SECRET || "default_otp_secret");
-  await sendEmailOtp(email, otp, env);
-  return json({ success: true });
+  try {
+    await sendEmailOtp(email, otp, env);
+    return json({ success: true });
+  } catch (err: any) {
+    return json({ error: err.message || "Failed to deliver OTP email" }, 500);
+  }
 }
 
 async function handleVerifyOtp(request: Request, env: Env): Promise<Response> {
@@ -224,7 +228,11 @@ async function sendEmailOtp(
     user_id: env.EMAILJS_PUBLIC_KEY,
     accessToken: env.EMAILJS_PRIVATE_KEY,
     template_params: {
+      to_email: email,
       user_email: email,
+      email: email,
+      recipient: email,
+      to_name: email.split("@")[0],
       otp_code: otp,
       app_name: "inFlow",
     },
@@ -243,6 +251,7 @@ async function sendEmailOtp(
   if (!res.ok) {
     const text = await res.text();
     console.error(`[sendEmailOtp] EmailJS error ${res.status}: ${text}`);
+    throw new Error(`EmailJS failed (${res.status}): ${text}`);
   } else {
     console.log(`[sendEmailOtp] OTP sent to ${email} via EmailJS`);
   }
