@@ -232,7 +232,11 @@ async function sendEmailOtp(
 
   const res = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+      "Origin": "https://inflowfinance.web.app",
+    },
     body: JSON.stringify(payload),
   });
 
