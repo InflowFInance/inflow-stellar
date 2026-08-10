@@ -19,7 +19,8 @@
         'CCCFBMNEBOV7KTVWLEBR2FFUGQC4KSL5TSITVU5ZPQ2U3PNLQJGX62W2';
 
       this.network =
-        window.location.hostname === 'localhost' ? 'testnet' : 'mainnet';
+        document.querySelector('meta[name="network"]')?.content ||
+        'testnet';
       console.log('[StellarBridge] Initialized on network:', this.network, 'Worker URL:', this.workerUrl, 'Contract ID:', this.contractId);
       return true;
     }
@@ -163,17 +164,40 @@
     }
 
     async getBalance(tokenAddress) {
+      if (!this.publicKey) {
+        console.warn('[StellarBridge] getBalance called before publicKey set');
+        return '0';
+      }
       const horizonUrl =
         this.network === 'mainnet'
           ? 'https://horizon.stellar.org'
           : 'https://horizon-testnet.stellar.org';
 
-      const res = await fetch(`${horizonUrl}/accounts/${this.publicKey}`);
-      const data = await res.json();
-      const balance = data.balances?.find(
-        (b) => b.asset_issuer && tokenAddress.includes(b.asset_issuer)
-      );
-      return balance?.balance || '0';
+      console.log('[StellarBridge] Fetching balance for:', this.publicKey, 'Token:', tokenAddress, 'Horizon URL:', horizonUrl);
+
+      try {
+        const res = await fetch(`${horizonUrl}/accounts/${this.publicKey}`);
+        if (!res.ok) {
+          console.warn('[StellarBridge] Horizon returned status:', res.status);
+          return '0';
+        }
+        const data = await res.json();
+
+        if (tokenAddress === 'native') {
+          const native = data.balances?.find((b) => b.asset_type === 'native');
+          console.log('[StellarBridge] Native XLM balance:', native?.balance);
+          return native?.balance || '0';
+        }
+
+        const balance = data.balances?.find(
+          (b) => b.asset_issuer && tokenAddress.includes(b.asset_issuer)
+        );
+        console.log('[StellarBridge] Token balance:', balance?.balance);
+        return balance?.balance || '0';
+      } catch (err) {
+        console.error('[StellarBridge] getBalance error:', err);
+        return '0';
+      }
     }
 
     async getNextStreamId() {
