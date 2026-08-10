@@ -1471,6 +1471,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
   bool _isLoadingStreams = false;
   List<StreamData> _myStreams = [];
   String _streamFilter = "ALL";
+  int? _lastCreatedStreamId;
 
   TxPhase _txPhase = TxPhase.none;
   String _txStatusMessage = "";
@@ -2243,6 +2244,8 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                       _txStatusMessage = "Creating salary stream on Stellar...";
                     });
                     try {
+                      final nextIdObj = await stellarBridge.getNextStreamId().toDart;
+                      final createdId = (int.tryParse((nextIdObj as JSString).toDart) ?? 1) - 1;
                       await stellarBridge.createStream(
                         InFlowConfig.usdcAddress(widget.isMainnet).toJS,
                         _amountCtrl.text.toJS,
@@ -2251,6 +2254,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                         true.toJS,
                       ).toDart;
                       setState(() {
+                        _lastCreatedStreamId = createdId > 0 ? createdId : 1;
                         _txPhase = TxPhase.success;
                         _txStatusMessage = "Stream created successfully!";
                         _payStep = 1;
@@ -2431,6 +2435,14 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
               minHeight: 6,
               borderRadius: BorderRadius.circular(3),
             ),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Rate: \$${stream.ratePerSecond.toStringAsFixed(6)}/s", style: GoogleFonts.jetBrainsMono(fontSize: 11, color: AppTheme.dim)),
+                Text("\$${(stream.ratePerSecond * 86400).toStringAsFixed(2)} / day", style: GoogleFonts.jetBrainsMono(fontSize: 11, color: AppTheme.amber, fontWeight: FontWeight.bold)),
+              ],
+            ),
           ],
         ),
       ),
@@ -2459,6 +2471,12 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                     const Icon(Icons.check_circle_rounded, color: AppTheme.green, size: 64)
                         .animate()
                         .scale(duration: 400.ms, curve: Curves.elasticOut),
+                    if (_lastCreatedStreamId != null) ...[
+                      const SizedBox(height: 16),
+                      Text("SHARE PAYMENT LINK", style: GoogleFonts.spaceGrotesk(fontSize: 11, color: AppTheme.dim, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 6),
+                      CopyableText(text: "${InFlowConfig.APP_URL}?stream=$_lastCreatedStreamId"),
+                    ],
                   ] else ...[
                     const Icon(Icons.error_outline_rounded, color: AppTheme.red, size: 64),
                   ],
@@ -2469,7 +2487,10 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                     AmberButton(
                       width: 160,
                       label: "Close",
-                      onPressed: () => setState(() => _txPhase = TxPhase.none),
+                      onPressed: () => setState(() {
+                        _txPhase = TxPhase.none;
+                        if (_lastCreatedStreamId != null) _selectedIndex = 2;
+                      }),
                     ),
                 ],
               ),
