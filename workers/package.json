@@ -10,7 +10,7 @@
     "deploy": "wrangler deploy"
   },
   "dependencies": {
-    "@stellar/stellar-sdk": "^13.0.0",
+    "@stellar/stellar-sdk": "^16.2.0",
     "buffer": "^6.0.3"
   },
   "devDependencies": {
