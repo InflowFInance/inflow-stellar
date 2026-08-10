@@ -1,4 +1,5 @@
 import { Keypair } from "@stellar/stellar-sdk";
+import { Buffer } from "buffer";
 
 export async function deriveKeypairFromEmail(
   email: string,
