@@ -2661,49 +2661,143 @@ class _StoryScreenState extends State<StoryScreen> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
                   child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Your labour is not a loan.\nIt's yours the second you do it.", style: GoogleFonts.syne(fontSize: 44, fontWeight: FontWeight.bold, height: 1.1, color: Colors.white))
-                        .animate().fadeIn().slideY(begin: 0.1),
-                    const SizedBox(height: 24),
-                    const Text("Africa has the world's fastest-growing workforce. inFlow streams your wage down to the second on Stellar.", style: TextStyle(color: AppTheme.dim, fontSize: 18, height: 1.6))
-                        .animate().fadeIn(delay: 200.ms),
-                    const SizedBox(height: 48),
-                    Text("THE PROBLEM IN NUMBERS", style: GoogleFonts.spaceGrotesk(fontSize: 11, color: AppTheme.amber, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 16),
-                    GridView.count(
-                      crossAxisCount: 2,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                      childAspectRatio: 1.4,
-                      children: [
-                        _statCard("77%", "of African workers live paycheck to paycheck"),
-                        _statCard("14–45", "days average wait to get paid"),
-                        _statCard("\$5B+", "lost annually to delayed wage payments"),
-                        _statCard("0s", "delay with inFlow real-time streaming"),
-                      ],
-                    ),
-                    const SizedBox(height: 48),
-                    Text("FREQUENTLY ASKED QUESTIONS", style: GoogleFonts.spaceGrotesk(fontSize: 11, color: AppTheme.amber, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 16),
-                    ...faqs.asMap().entries.map((e) => _faqTile(e.key, e.value["q"]!, e.value["a"]!)),
-                    const SizedBox(height: 48),
-                    Center(
-                      child: AmberButton(
-                        width: 240,
-                        label: "Try inFlow Now →",
-                        onPressed: () => Navigator.pop(context),
-                      ),
-                    ),
-                  ],
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Your labour is not a loan.\nIt's yours the second you do it.", style: GoogleFonts.syne(fontSize: 44, fontWeight: FontWeight.bold, height: 1.1, color: Colors.white))
+                          .animate().fadeIn().slideY(begin: 0.1),
+                      const SizedBox(height: 24),
+                      const Text("Africa has the world's fastest-growing workforce. inFlow streams your wage down to the second on Stellar.", style: TextStyle(color: AppTheme.dim, fontSize: 18, height: 1.6))
+                          .animate().fadeIn(delay: 200.ms),
+                      const SizedBox(height: 48),
+                      Text("THE PROBLEM IN NUMBERS", style: GoogleFonts.spaceGrotesk(fontSize: 11, color: AppTheme.amber, fontWeight: FontWeight.bold, letterSpacing: 1.2))
+                          .animate().fadeIn(delay: 300.ms),
+                      const SizedBox(height: 16),
+                      GridView.count(
+                        crossAxisCount: 2,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        crossAxisSpacing: 16,
+                        mainAxisSpacing: 16,
+                        childAspectRatio: 1.3,
+                        children: [
+                          _statCard("77%", "of African workforce live paycheck to paycheck"),
+                          _statCard("31+ Days", "average wait to receive monthly salary"),
+                          _statCard("\$5B+", "lost annually to wage debt and cash delays"),
+                          _statCard("0s", "delay with inFlow. Money moves per second"),
+                        ],
+                      ).animate().fadeIn(delay: 400.ms),
+                      const SizedBox(height: 56),
+                      Text("HOW INFLOW WORKS", style: GoogleFonts.spaceGrotesk(fontSize: 11, color: AppTheme.amber, fontWeight: FontWeight.bold, letterSpacing: 1.2))
+                          .animate().fadeIn(delay: 500.ms),
+                      const SizedBox(height: 24),
+                      _timelineStep("01", "Sign in with Email", "No passwords, seed phrases, or wallet installs. Non-custodial keypair derived securely via HKDF from your authenticated session."),
+                      _timelineStep("02", "Employer Deposits USDC", "Employer specifies recipient email, deposit amount in USDC, and streaming duration (e.g. 30 days)."),
+                      _timelineStep("03", "Per-Second Salary Stream", "Soroban smart contract locks funds and unlocks salary to the microsecond. Watch your balance tick up in real time."),
+                      _timelineStep("04", "Open Secure Claim Link", "Employee receives email notification with direct claim link. Money is already streaming before sign-in."),
+                      _timelineStep("05", "Collect Earnings Anytime", "Employee collects accumulated earnings on demand into their wallet with zero gas fees sponsored via fee_bump."),
+                      const SizedBox(height: 56),
+                      Text("THE STELLAR ADVANTAGE", style: GoogleFonts.spaceGrotesk(fontSize: 11, color: AppTheme.amber, fontWeight: FontWeight.bold, letterSpacing: 1.2))
+                          .animate().fadeIn(delay: 600.ms),
+                      const SizedBox(height: 16),
+                      GlassCard(
+                        backgroundColor: const Color(0x147C3AED),
+                        borderColor: AppTheme.purple.withValues(alpha: 0.3),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                const Icon(Icons.bolt_rounded, color: AppTheme.purple, size: 28),
+                                const SizedBox(width: 12),
+                                Text("Why We Built on Stellar & Soroban", style: GoogleFonts.syne(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+                              ],
+                            ),
+                            const SizedBox(height: 16),
+                            _advantageRow("⚡ Sub-5s Finality", "Transactions confirm in under 5 seconds, making micro-earnings instantly collectible."),
+                            _advantageRow("⛽ Zero Gas Fees", "Stellar fee_bump protocol allows inFlow worker relay to sponsor transaction fees on your behalf."),
+                            _advantageRow("💵 Native USDC", "Direct settlement in Circle USDC on Stellar — no wrapped tokens or bridge risks."),
+                            _advantageRow("🛡️ Non-Custodial Security", "Soroban smart contract enforces stream rules; unearned funds can never be stolen."),
+                          ],
+                        ),
+                      ).animate().fadeIn(delay: 700.ms),
+                      const SizedBox(height: 56),
+                      Text("FREQUENTLY ASKED QUESTIONS", style: GoogleFonts.spaceGrotesk(fontSize: 11, color: AppTheme.amber, fontWeight: FontWeight.bold, letterSpacing: 1.2))
+                          .animate().fadeIn(delay: 800.ms),
+                      const SizedBox(height: 16),
+                      ...faqs.asMap().entries.map((e) => _faqTile(e.key, e.value["q"]!, e.value["a"]!)),
+                      const SizedBox(height: 56),
+                      GlassCard(
+                        backgroundColor: const Color(0x1AF59E0B),
+                        borderColor: AppTheme.amber.withValues(alpha: 0.4),
+                        child: Column(
+                          children: [
+                            Text("Ready to stream your salary?", style: GoogleFonts.syne(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white)),
+                            const SizedBox(height: 8),
+                            Text("Join Africa's first real-time streaming protocol today.", style: GoogleFonts.plusJakartaSans(color: AppTheme.dim, fontSize: 14)),
+                            const SizedBox(height: 24),
+                            AmberButton(
+                              width: 240,
+                              label: "Try inFlow Now →",
+                              onPressed: () => Navigator.pop(context),
+                            ),
+                          ],
+                        ),
+                      ).animate().fadeIn(delay: 900.ms),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
+    );
+  }
+
+  Widget _timelineStep(String numStr, String title, String desc) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 24),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 38,
+            height: 38,
+            decoration: BoxDecoration(
+              color: AppTheme.amber.withValues(alpha: 0.15),
+              shape: BoxShape.circle,
+              border: Border.all(color: AppTheme.amber),
+            ),
+            child: Center(
+              child: Text(numStr, style: GoogleFonts.jetBrainsMono(fontSize: 13, fontWeight: FontWeight.bold, color: AppTheme.amber)),
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: GoogleFonts.syne(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                const SizedBox(height: 4),
+                Text(desc, style: GoogleFonts.plusJakartaSans(fontSize: 13, color: AppTheme.dim, height: 1.5)),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _advantageRow(String title, String desc) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.white)),
+          const SizedBox(height: 2),
+          Text(desc, style: GoogleFonts.plusJakartaSans(fontSize: 12, color: AppTheme.dim)),
+        ],
       ),
     );
   }
@@ -2715,9 +2809,9 @@ class _StoryScreenState extends State<StoryScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(val, style: GoogleFonts.syne(fontSize: 32, fontWeight: FontWeight.bold, color: AppTheme.amber)),
+          Text(val, style: GoogleFonts.syne(fontSize: 28, fontWeight: FontWeight.bold, color: AppTheme.amber)),
           const SizedBox(height: 6),
-          Text(label, style: GoogleFonts.plusJakartaSans(fontSize: 12, color: AppTheme.dim)),
+          Text(label, style: GoogleFonts.plusJakartaSans(fontSize: 12, color: AppTheme.dim, height: 1.3)),
         ],
       ),
     );
