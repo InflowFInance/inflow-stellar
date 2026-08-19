@@ -49,8 +49,74 @@ flowchart LR
 
 ---
 
+## 📂 Project Structure
+
+```
+inflow-stellar/
+├── apps/
+│   └── web/                   # Flutter Web frontend application
+│       ├── lib/main.dart      # Main entry point, state management & UI/UX components
+│       ├── build_web.sh       # Release build & index.html loading screen injector
+│       └── pubspec.yaml       # Flutter dependencies & assets
+├── contract/                  # Soroban Rust smart contracts
+│   └── src/lib.rs             # Salary streaming contract logic
+├── worker/                    # Cloudflare Worker relay service
+│   └── src/index.ts           # Email OTP, HKDF key derivation & gas sponsorship
+├── docs/                      # Architecture, contract & security documentation
+└── README.md                  # Project overview & developer guide
+```
+
+---
+
+## 🚀 Local Development Setup
+
+### Prerequisites
+- [Flutter SDK](https://docs.flutter.dev/get-started/install) (`v3.22+`)
+- [Node.js](https://nodejs.org/) (`v18+`)
+- [Soroban CLI](https://soroban.stellar.org/docs/getting-started/setup) (`v20+`)
+- [Firebase CLI](https://firebase.google.com/docs/cli) (for web hosting deployment)
+
+### 1. Clone Repository & Install Dependencies
+```bash
+git clone https://github.com/InflowFInance/inflow-stellar.git
+cd inflow-stellar/apps/web
+flutter pub get
+```
+
+### 2. Run Web App Locally
+```bash
+flutter run -d chrome --web-port 8080
+```
+
+### 3. Build & Deploy Web App
+```bash
+cd apps/web
+bash build_web.sh
+cd ../..
+firebase deploy --only hosting:inflowfinance
+```
+
+---
+
 ## 📜 Soroban Smart Contract Info
 
 - **Contract ID**: `CCCFBMNEBOV7KTVWLEBR2FFUGQC4KSL5TSITVU5ZPQ2U3PNLQJGX62W2`
 - **Network**: Stellar Testnet & Mainnet Ready
 - **Explorer Link**: [View on Stellar Expert](https://stellar.expert/explorer/testnet/contract/CCCFBMNEBOV7KTVWLEBR2FFUGQC4KSL5TSITVU5ZPQ2U3PNLQJGX62W2)
+
+---
+
+## 🤝 Contributing
+
+We welcome open-source contributions! Please read our [CONTRIBUTING.md](CONTRIBUTING.md) guide before submitting pull requests.
+
+1. Fork the repository and create a feature branch (`git checkout -b feat/amazing-feature`).
+2. Run `flutter analyze` to ensure clean code quality.
+3. Commit your changes (`git commit -m 'feat: add amazing feature'`).
+4. Push to your branch and open a Pull Request.
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
