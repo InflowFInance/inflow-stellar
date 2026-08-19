@@ -1,19 +1,19 @@
 ---
-name: Feature request
-about: Suggest an idea for inFlow for Stellar
-title: ''
-labels: enhancement
+name: Feature Request
+about: Suggest an idea or enhancement for inFlow Stellar
+title: '[FEAT] '
+labels: 'enhancement, proposal'
 assignees: ''
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+## 🚀 Feature Summary
+A clear and concise description of the feature you are proposing.
 
-**Describe the solution you'd like**
-A clear description of what you want to happen.
+## 💡 Motivation & Problem Statement
+Why is this feature needed? What problem does it solve for employers or workers?
 
-**Describe alternatives you've considered**
-A clear description of any alternative solutions or features you've considered.
+## 🛠️ Proposed Solution
+Describe the solution or UI/UX implementation you would like to see.
 
-**Additional context**
-Add any other context or screenshots about the feature request here.
+## 📌 Additional Context
+Add any other context, mockup screenshots, or design links about the feature request here.
