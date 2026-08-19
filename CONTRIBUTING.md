@@ -1,98 +1,71 @@
-# Contributing to inFlow for Stellar
+# Contributing to inFlow Stellar
 
-Thank you for investing time in contributing to inFlow! This document provides guidelines and instructions for building, testing, and submitting code to the repository.
+Thank you for your interest in contributing to **inFlow Stellar**! We are building open-source infrastructure for real-time salary streaming across Africa on Stellar and Soroban.
 
----
-
-## 🎯 Ways to Contribute
-
-- **Smart Contract Improvements:** Gas optimization, storage efficiency, or new streaming parameters.
-- **SDK & Developer Experience:** Adding helper utilities or improving TypeScript interfaces.
-- **Frontend & Mobile UI:** Enhancing user experience, ticker animations, or responsiveness.
-- **Backend & Relayers:** Security enhancements, rate-limiting, or fee-bump optimizations.
-- **Documentation & Runbooks:** Clarifying deployment procedures or architecture docs.
+This document outlines the workflow and guidelines for open-source maintainers and contributors.
 
 ---
 
-## 💻 Development Setup
+## 🤝 Code of Conduct
 
-### Prerequisites
-- **Rust Toolchain:** Managed via `rust-toolchain.toml` (target: `wasm32v1-none`).
-- **Node.js:** v20 or higher.
-- **Flutter:** 3.x for web and mobile development.
-- **Stellar CLI:** For contract deployment and invocation.
+We expect all contributors to adhere to our standards of respectful, inclusive, and professional communication.
 
-### Initial Build Steps
+---
+
+## 🛠️ How to Contribute
+
+### 1. Find or Open an Issue
+- Browse open GitHub Issues labeled `good-first-issue` or `enhancement`.
+- Request assignment on an issue before starting work to avoid duplicate effort.
+- Unassigned draft Pull Requests may be closed.
+
+### 2. Fork & Clone Repository
 ```bash
-git clone https://github.com/InflowFinance/inflow-stellar.git
+git clone https://github.com/InflowFInance/inflow-stellar.git
 cd inflow-stellar
-npm install
-cd contracts && cargo build
 ```
+
+### 3. Create a Feature Branch
+Use descriptive branch prefixes:
+- `feat/feature-name` for new features
+- `fix/bug-name` for bug fixes
+- `docs/doc-name` for documentation updates
+- `test/test-name` for tests
+
+```bash
+git checkout -b feat/my-new-feature
+```
+
+### 4. Code Quality & Standards
+- **Flutter Web**: Follow the official Flutter style guide. Run `flutter analyze` before committing.
+- **Soroban Contracts**: Enforce safety patterns in Rust, avoid panic conditions, and document public functions with `///` rustdoc.
+- **Commit Messages**: Follow standard conventional commits format (e.g. `feat: ...`, `fix: ...`, `docs: ...`, `refactor: ...`).
+
+### 5. Run Automated Analysis & Tests
+```bash
+cd apps/web
+flutter analyze
+flutter test
+```
+
+### 6. Submit a Pull Request
+- Push your feature branch: `git push origin feat/my-new-feature`
+- Open a Pull Request against `main`.
+- Link relevant GitHub issues in the PR description (e.g. `Closes #12`).
+- Provide screenshots or GIF recordings for UI changes.
 
 ---
 
-## 🧪 Testing Guidelines
+## ⚡ Architecture Overview for Contributors
 
-Before opening a pull request, ensure all validation checks pass:
-
-```bash
-# 1. Contract formatting and linting
-cd contracts
-cargo fmt --all -- --check
-cargo clippy --all-targets -- -D warnings
-cargo test
-
-# 2. SDK build and test
-cd ../sdk
-npm run build
-npm test
-
-# 3. Cloudflare Worker build
-cd ../workers
-npm run build
-```
+- **Frontend**: Flutter Web in `apps/web/lib/main.dart` with `@JS('window.StellarBridge')` JavaScript interop.
+- **Contract**: Soroban Rust contract in `contract/src/lib.rs`.
+- **Relay**: Cloudflare Worker relay handling HKDF non-custodial session key derivation and `fee_bump` gas sponsorship.
 
 ---
 
-## 📝 Commit Message Conventions
+## 💬 Getting Help
 
-We use structured commit messages to maintain a clean git history:
-
-- `feat(contracts): add TTL touch-on-read storage helper`
-- `fix(sdk): handle zero deposit remainder calculations`
-- `test(contracts): add secret claim verification unit tests`
-- `docs: update deployment runbook for testnet`
-- `ci: add GitHub Actions WASM build step`
-
----
-
-## 🔒 Security Vulnerabilities
-
-Please do not open public GitHub issues for security vulnerabilities. Refer to [SECURITY.md](SECURITY.md) for instructions on confidential disclosure.
-
----
-
-## 📜 License
-
-By contributing, you agree that your contributions will be licensed under the [Apache 2.0 License](LICENSE).
-
-## Testing the Soroban Contract
-
-Run the full test suite:
-```bash
-cd contracts
-cargo test -- --nocapture
-```
-
-Run only streaming math tests:
-```bash
-cargo test math
-```
-
-Run a specific test:
-```bash
-cargo test test_withdraw_after_half_duration -- --nocapture
-```
-
-The contract uses `soroban_sdk::testutils` for in-process simulation — no testnet required for unit tests.
+If you have questions or get stuck:
+- Open a discussion in GitHub Discussions.
+- Tag maintainers `@stayzappy` or `@Dominion116` on your PR.
