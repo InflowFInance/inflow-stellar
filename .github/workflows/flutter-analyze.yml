@@ -1,0 +1,39 @@
+name: Flutter Web CI & Static Analysis
+
+on:
+  push:
+    branches: [ main, agent-build ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  analyze:
+    name: Analyze & Verify Flutter Code
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Codebase
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.x'
+          channel: 'stable'
+          cache: true
+
+      - name: Install Dependencies
+        run: |
+          cd apps/web
+          flutter pub get
+
+      - name: Run Static Code Analysis
+        run: |
+          cd apps/web
+          flutter analyze
