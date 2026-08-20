@@ -2564,6 +2564,14 @@ class _StreamCardState extends State<StreamCard> {
                   ],
                   const SizedBox(height: 20),
                   Text(_txStatusMessage, textAlign: TextAlign.center, style: GoogleFonts.plusJakartaSans(fontSize: 15, fontWeight: FontWeight.bold)),
+                  if (_txHash != null && _txHash!.isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    GhostButton(
+                      label: "View on Stellar Explorer ↗",
+                      color: AppTheme.dim,
+                      onPressed: () => launchUrl(Uri.parse(InFlowConfig.getExplorerUrl(_txHash!, widget.isMainnet, isAddress: false))),
+                    ),
+                  ],
                   const SizedBox(height: 24),
                   if (_txPhase != TxPhase.processing)
                     AmberButton(
