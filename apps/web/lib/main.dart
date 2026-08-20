@@ -2391,26 +2391,39 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
 
   Widget _buildEmptyStreamsState() {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(shape: BoxShape.circle, color: AppTheme.amber.withValues(alpha: 0.08)),
-            child: const Icon(Icons.bolt_rounded, size: 48, color: AppTheme.amber),
-          ),
-          const SizedBox(height: 20),
-          Text("No Streams Found", style: GoogleFonts.syne(fontSize: 18, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 8),
-          const Text("Create a payment stream or ask your employer to stream salary to you.", textAlign: TextAlign.center, style: TextStyle(color: AppTheme.dim, fontSize: 13)),
-          const SizedBox(height: 24),
-          AmberButton(
-            width: 200,
-            label: "Create a Stream →",
-            onPressed: () => setState(() => _selectedIndex = 1),
-          ),
-        ],
-      ),
+      child: GlassCard(
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppTheme.amber.withValues(alpha: 0.1),
+                border: Border.all(color: AppTheme.amber.withValues(alpha: 0.3)),
+                boxShadow: [BoxShadow(color: AppTheme.amber.withValues(alpha: 0.2), blurRadius: 30)],
+              ),
+              child: const Icon(Icons.flash_on_rounded, size: 52, color: AppTheme.amber),
+            ).animate(onPlay: (c) => c.repeat(reverse: true)).moveY(begin: -4, end: 4, duration: 2000.ms),
+            const SizedBox(height: 24),
+            Text("No Active Salary Streams", style: GoogleFonts.syne(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+            const SizedBox(height: 10),
+            Text(
+              "Start streaming salary per second to your team,\nor open your employer's claim link to collect earnings.",
+              textAlign: TextAlign.center,
+              style: GoogleFonts.plusJakartaSans(color: AppTheme.dim, fontSize: 13, height: 1.5),
+            ),
+            const SizedBox(height: 28),
+            AmberButton(
+              width: 220,
+              label: "⚡ Start First Stream →",
+              onPressed: () => setState(() => _selectedIndex = 1),
+            ),
+          ],
+        ),
+      ).animate().fadeIn(duration: 400.ms).scaleXY(begin: 0.95, end: 1.0),
     );
   }
 
