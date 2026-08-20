@@ -1300,12 +1300,34 @@ class _LandingScreenState extends State<LandingScreen> {
                 _buildPinput(),
                 const SizedBox(height: 16),
                 Center(
-                  child: TextButton(
-                    onPressed: _resendCountdown == 0 ? _sendOtp : null,
-                    child: Text(
-                      _resendCountdown > 0 ? "Resend code in ${_resendCountdown}s" : "Resend code",
-                      style: GoogleFonts.plusJakartaSans(color: _resendCountdown == 0 ? AppTheme.amber : AppTheme.dim, fontSize: 13),
-                    ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (_resendCountdown > 0) ...[
+                        SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                            value: _resendCountdown / 30.0,
+                            color: AppTheme.amber,
+                            backgroundColor: AppTheme.bgDark,
+                            strokeWidth: 2.2,
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                      ],
+                      TextButton(
+                        onPressed: _resendCountdown == 0 ? _sendOtp : null,
+                        child: Text(
+                          _resendCountdown > 0 ? "Resend code in ${_resendCountdown}s" : "⚡ Resend code",
+                          style: GoogleFonts.plusJakartaSans(
+                            color: _resendCountdown == 0 ? AppTheme.amber : AppTheme.dim,
+                            fontWeight: _resendCountdown == 0 ? FontWeight.bold : FontWeight.normal,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
