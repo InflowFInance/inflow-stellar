@@ -2428,6 +2428,52 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
   }
 
   Widget _buildStreamCard(StreamData stream) {
+    return StreamCard(
+      stream: stream,
+      connectedAddress: widget.connectedAddress,
+      loggedInEmail: widget.loggedInEmail,
+      onTap: () => _showStreamDetailModal(stream),
+    );
+  }
+
+class StreamCard extends StatefulWidget {
+  final StreamData stream;
+  final String connectedAddress;
+  final String loggedInEmail;
+  final VoidCallback onTap;
+
+  const StreamCard({
+    super.key,
+    required this.stream,
+    required this.connectedAddress,
+    required this.loggedInEmail,
+    required this.onTap,
+  });
+
+  @override
+  State<StreamCard> createState() => _StreamCardState();
+}
+
+class _StreamCardState extends State<StreamCard> {
+  late Timer _ticker;
+
+  @override
+  void initState() {
+    super.initState();
+    _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _ticker.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final stream = widget.stream;
     bool isIncoming = stream.recipient == widget.connectedAddress || stream.recipientEmail == widget.loggedInEmail;
     double timePassed = (DateTime.now().millisecondsSinceEpoch / 1000) - stream.startTime;
     double duration = (stream.stopTime - stream.startTime).toDouble();
@@ -2435,7 +2481,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     double unlockedAmount = (progress * stream.deposit).clamp(0.0, stream.deposit);
 
     return GestureDetector(
-      onTap: () => _showStreamDetailModal(stream),
+      onTap: widget.onTap,
       child: GlassCard(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -2483,6 +2529,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
       ),
     );
   }
+}
 
   Widget _buildTxOverlay() {
     return Positioned.fill(
