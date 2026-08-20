@@ -1795,9 +1795,16 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: widget.isMainnet ? AppTheme.green.withValues(alpha: 0.3) : AppTheme.amber.withValues(alpha: 0.3)),
                       ),
-                      child: Text(
-                        widget.isMainnet ? 'Mainnet' : 'Testnet',
-                        style: GoogleFonts.jetBrainsMono(fontSize: 11, fontWeight: FontWeight.bold, color: widget.isMainnet ? AppTheme.green : AppTheme.amber),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          PulseDot(color: widget.isMainnet ? AppTheme.green : AppTheme.amber, size: 6),
+                          const SizedBox(width: 6),
+                          Text(
+                            widget.isMainnet ? 'Mainnet' : 'Testnet',
+                            style: GoogleFonts.jetBrainsMono(fontSize: 11, fontWeight: FontWeight.bold, color: widget.isMainnet ? AppTheme.green : AppTheme.amber),
+                          ),
+                        ],
                       ),
                     ),
                     const Spacer(),
