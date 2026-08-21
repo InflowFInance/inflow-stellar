@@ -2443,6 +2443,67 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     );
   }
 
+  Widget _buildTxOverlay() {
+    return Positioned.fill(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+        child: Container(
+          color: Colors.black.withValues(alpha: 0.6),
+          child: Center(
+            child: GlassCard(
+              padding: const EdgeInsets.all(32),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (_txPhase == TxPhase.processing) ...[
+                    const Icon(Icons.flash_on_rounded, color: AppTheme.amber, size: 56)
+                        .animate(onPlay: (c) => c.repeat(reverse: true))
+                        .moveY(begin: -8, end: 8, duration: 1500.ms),
+                    const SizedBox(height: 24),
+                    const CircularProgressIndicator(color: AppTheme.amber),
+                  ] else if (_txPhase == TxPhase.success) ...[
+                    const Icon(Icons.check_circle_rounded, color: AppTheme.green, size: 64)
+                        .animate()
+                        .scale(duration: 400.ms, curve: Curves.elasticOut),
+                    if (_lastCreatedStreamId != null) ...[
+                      const SizedBox(height: 16),
+                      Text("SHARE PAYMENT LINK", style: GoogleFonts.spaceGrotesk(fontSize: 11, color: AppTheme.dim, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 6),
+                      CopyableText(text: "${InFlowConfig.APP_URL}?stream=$_lastCreatedStreamId"),
+                    ],
+                  ] else ...[
+                    const Icon(Icons.error_outline_rounded, color: AppTheme.red, size: 64),
+                  ],
+                  const SizedBox(height: 20),
+                  Text(_txStatusMessage, textAlign: TextAlign.center, style: GoogleFonts.plusJakartaSans(fontSize: 15, fontWeight: FontWeight.bold)),
+                  if (_txHash != null && _txHash!.isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    GhostButton(
+                      label: "View on Stellar Explorer ↗",
+                      color: AppTheme.dim,
+                      onPressed: () => launchUrl(Uri.parse(InFlowConfig.getExplorerUrl(_txHash!, widget.isMainnet, isAddress: false))),
+                    ),
+                  ],
+                  const SizedBox(height: 24),
+                  if (_txPhase != TxPhase.processing)
+                    AmberButton(
+                      width: 160,
+                      label: "Close",
+                      onPressed: () => setState(() {
+                        _txPhase = TxPhase.none;
+                        if (_lastCreatedStreamId != null) _selectedIndex = 2;
+                      }),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class StreamCard extends StatefulWidget {
   final StreamData stream;
   final String connectedAddress;
@@ -2532,67 +2593,6 @@ class _StreamCardState extends State<StreamCard> {
               ],
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-  Widget _buildTxOverlay() {
-    return Positioned.fill(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-        child: Container(
-          color: Colors.black.withValues(alpha: 0.6),
-          child: Center(
-            child: GlassCard(
-              padding: const EdgeInsets.all(32),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (_txPhase == TxPhase.processing) ...[
-                    const Icon(Icons.flash_on_rounded, color: AppTheme.amber, size: 56)
-                        .animate(onPlay: (c) => c.repeat(reverse: true))
-                        .moveY(begin: -8, end: 8, duration: 1500.ms),
-                    const SizedBox(height: 24),
-                    const CircularProgressIndicator(color: AppTheme.amber),
-                  ] else if (_txPhase == TxPhase.success) ...[
-                    const Icon(Icons.check_circle_rounded, color: AppTheme.green, size: 64)
-                        .animate()
-                        .scale(duration: 400.ms, curve: Curves.elasticOut),
-                    if (_lastCreatedStreamId != null) ...[
-                      const SizedBox(height: 16),
-                      Text("SHARE PAYMENT LINK", style: GoogleFonts.spaceGrotesk(fontSize: 11, color: AppTheme.dim, fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 6),
-                      CopyableText(text: "${InFlowConfig.APP_URL}?stream=$_lastCreatedStreamId"),
-                    ],
-                  ] else ...[
-                    const Icon(Icons.error_outline_rounded, color: AppTheme.red, size: 64),
-                  ],
-                  const SizedBox(height: 20),
-                  Text(_txStatusMessage, textAlign: TextAlign.center, style: GoogleFonts.plusJakartaSans(fontSize: 15, fontWeight: FontWeight.bold)),
-                  if (_txHash != null && _txHash!.isNotEmpty) ...[
-                    const SizedBox(height: 12),
-                    GhostButton(
-                      label: "View on Stellar Explorer ↗",
-                      color: AppTheme.dim,
-                      onPressed: () => launchUrl(Uri.parse(InFlowConfig.getExplorerUrl(_txHash!, widget.isMainnet, isAddress: false))),
-                    ),
-                  ],
-                  const SizedBox(height: 24),
-                  if (_txPhase != TxPhase.processing)
-                    AmberButton(
-                      width: 160,
-                      label: "Close",
-                      onPressed: () => setState(() {
-                        _txPhase = TxPhase.none;
-                        if (_lastCreatedStreamId != null) _selectedIndex = 2;
-                      }),
-                    ),
-                ],
-              ),
-            ),
-          ),
         ),
       ),
     );
