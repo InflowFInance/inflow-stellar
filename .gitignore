@@ -6,8 +6,6 @@ contracts/target/
 # Node
 node_modules/
 dist/
-.env
-.env.local
 .env.*.local
 
 # Flutter
@@ -30,3 +28,4 @@ Thumbs.db
 keypairs/
 *.wasm
 target/
+config.bat
