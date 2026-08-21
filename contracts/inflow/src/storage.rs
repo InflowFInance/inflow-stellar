@@ -1,6 +1,6 @@
-use soroban_sdk::{Address, Env};
-use crate::types::{Stream, StorageKey};
 use crate::errors::ContractError;
+use crate::types::{StorageKey, Stream};
+use soroban_sdk::{Address, Env};
 
 pub const TTL_THRESHOLD: u32 = 10_000;
 pub const TTL_EXTEND_TO: u32 = 6_307_200;
@@ -34,19 +34,21 @@ pub fn read_next_stream_id(env: &Env) -> u64 {
 
 pub fn write_next_stream_id(env: &Env, id: u64) {
     env.storage().instance().set(&StorageKey::NextStreamId, &id);
-    env.storage().instance().extend_ttl(TTL_THRESHOLD, TTL_EXTEND_TO);
+    env.storage()
+        .instance()
+        .extend_ttl(TTL_THRESHOLD, TTL_EXTEND_TO);
 }
 
 pub fn extend_stream_ttl_internal(env: &Env, stream_id: u64) {
     let key = StorageKey::Stream(stream_id);
-    env.storage().persistent().extend_ttl(&key, TTL_THRESHOLD, TTL_EXTEND_TO);
-}
-
-pub fn read_admin(env: &Env) -> Option<Address> {
-    env.storage().instance().get::<StorageKey, Address>(&StorageKey::Admin)
+    env.storage()
+        .persistent()
+        .extend_ttl(&key, TTL_THRESHOLD, TTL_EXTEND_TO);
 }
 
 pub fn write_admin(env: &Env, admin: &Address) {
     env.storage().instance().set(&StorageKey::Admin, admin);
-    env.storage().instance().extend_ttl(TTL_THRESHOLD, TTL_EXTEND_TO);
+    env.storage()
+        .instance()
+        .extend_ttl(TTL_THRESHOLD, TTL_EXTEND_TO);
 }

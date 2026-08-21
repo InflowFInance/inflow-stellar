@@ -1,5 +1,5 @@
-use soroban_sdk::Env;
 use crate::types::Stream;
+use soroban_sdk::Env;
 
 pub fn unlocked_balance(env: &Env, stream: &Stream) -> i128 {
     if stream.recipient.is_none() {
