@@ -11,15 +11,19 @@ pub fn emit_stream_created(
 ) {
     env.events().publish(
         (symbol_short!("CREATED"), stream_id),
-        (sender.clone(), recipient.clone(), token.clone(), deposit, claim_hash.clone()),
+        (
+            sender.clone(),
+            recipient.clone(),
+            token.clone(),
+            deposit,
+            claim_hash.clone(),
+        ),
     );
 }
 
 pub fn emit_stream_claimed(env: &Env, stream_id: u64, recipient: &Address) {
-    env.events().publish(
-        (symbol_short!("CLAIMED"), stream_id),
-        recipient.clone(),
-    );
+    env.events()
+        .publish((symbol_short!("CLAIMED"), stream_id), recipient.clone());
 }
 
 pub fn emit_withdrawn(env: &Env, stream_id: u64, recipient: &Address, amount: i128) {
@@ -39,6 +43,11 @@ pub fn emit_cancelled(
 ) {
     env.events().publish(
         (symbol_short!("CANCELD"), stream_id),
-        (sender.clone(), recipient.clone(), sender_balance, recipient_balance),
+        (
+            sender.clone(),
+            recipient.clone(),
+            sender_balance,
+            recipient_balance,
+        ),
     );
 }
