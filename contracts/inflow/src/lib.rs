@@ -1,4 +1,5 @@
 #![no_std]
+#![allow(clippy::too_many_arguments)]
 
 mod errors;
 mod events;
@@ -6,15 +7,13 @@ mod math;
 mod storage;
 mod types;
 
-use soroban_sdk::{
-    contract, contractimpl, token, Address, Bytes, Env,
-};
+use soroban_sdk::{contract, contractimpl, token, Address, Bytes, Env};
 
 pub use errors::ContractError;
 pub use math::{available_to_withdraw, cancellation_split, unlocked_balance};
 pub use storage::{
-    extend_stream_ttl_internal, read_next_stream_id, read_stream,
-    write_admin, write_next_stream_id, write_stream,
+    extend_stream_ttl_internal, read_next_stream_id, read_stream, write_admin,
+    write_next_stream_id, write_stream,
 };
 pub use types::{StorageKey, Stream};
 
@@ -179,11 +178,7 @@ impl InFlowContract {
         Ok(())
     }
 
-    pub fn cancel_stream(
-        env: Env,
-        stream_id: u64,
-        caller: Address,
-    ) -> Result<(), ContractError> {
+    pub fn cancel_stream(env: Env, stream_id: u64, caller: Address) -> Result<(), ContractError> {
         caller.require_auth();
         let mut stream = read_stream(&env, stream_id)?;
 
@@ -210,11 +205,7 @@ impl InFlowContract {
 
         if recipient_gets > 0 {
             if let Some(ref recipient) = stream.recipient {
-                token_client.transfer(
-                    &env.current_contract_address(),
-                    recipient,
-                    &recipient_gets,
-                );
+                token_client.transfer(&env.current_contract_address(), recipient, &recipient_gets);
             }
         }
 
@@ -266,10 +257,7 @@ impl InFlowContract {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use soroban_sdk::{
-        testutils::Address as _,
-        token, Bytes, Env,
-    };
+    use soroban_sdk::{testutils::Address as _, token, Bytes, Env};
 
     fn create_test_env() -> (Env, InFlowContractClient<'static>, Address, Address) {
         let env = Env::default();
@@ -283,10 +271,8 @@ mod tests {
         (env, client, contract_id, admin)
     }
 
-    fn create_token<'a>(
-        env: &'a Env,
-        admin: &Address,
-    ) -> (Address, token::StellarAssetClient<'a>) {
+    #[allow(deprecated)]
+    fn create_token<'a>(env: &'a Env, admin: &Address) -> (Address, token::StellarAssetClient<'a>) {
         let token_id = env.register_stellar_asset_contract(admin.clone());
         let client = token::StellarAssetClient::new(env, &token_id);
         (token_id, client)
