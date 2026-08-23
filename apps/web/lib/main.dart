@@ -12,7 +12,6 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:pinput/pinput.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:percent_indicator/percent_indicator.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // ==============================================================
