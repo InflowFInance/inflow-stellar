@@ -3,6 +3,7 @@
 [![Live Web App](https://img.shields.io/badge/Live%20App-inflowfinance.web.app-F59E0B?style=for-the-badge&logo=google-chrome&logoColor=white)](https://inflowfinance.web.app)
 [![Network](https://img.shields.io/badge/Network-Stellar%20Testnet-7C3AED?style=for-the-badge&logo=stellar&logoColor=white)](https://stellar.expert/explorer/testnet/contract/CCCFBMNEBOV7KTVWLEBR2FFUGQC4KSL5TSITVU5ZPQ2U3PNLQJGX62W2)
 [![Contract](https://img.shields.io/badge/Soroban%20Contract-CCCFBM...QJGX62W2-00D37F?style=for-the-badge&logo=rust&logoColor=white)](https://stellar.expert/explorer/testnet/contract/CCCFBMNEBOV7KTVWLEBR2FFUGQC4KSL5TSITVU5ZPQ2U3PNLQJGX62W2)
+[![Security](https://img.shields.io/badge/Security-Policy-green.svg?style=for-the-badge)](SECURITY.md)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
 
 > **Real-time salary streaming for Africa's workforce. No bank. No delay. Just email.**
