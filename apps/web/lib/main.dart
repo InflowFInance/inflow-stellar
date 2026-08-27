@@ -1496,6 +1496,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
 
   TxPhase _txPhase = TxPhase.none;
   String _txStatusMessage = "";
+  String? _txHash;
 
   late AnimationController _spinController;
 
